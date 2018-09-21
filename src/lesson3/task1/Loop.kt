@@ -166,6 +166,7 @@ fun maxDivisor(n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     var divider = 1
+    if (n == 1 && m == 1) return true
     if (n == m) return false
     val max = if (n > m) n else m
     for (i in 2 .. max / 2) {
