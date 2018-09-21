@@ -143,6 +143,8 @@ class Tests {
         assertFalse(isCoPrime(2, 2))
         assertTrue(isCoPrime(3, 2))
         assertFalse(isCoPrime(2, 4))
+        assertFalse(isCoPrime(20174, 2))
+
 
 
 
