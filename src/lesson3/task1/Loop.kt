@@ -1,7 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
-import kotlin.math.sqrt
+import lesson1.task1.sqr
+import java.lang.Math.pow
+import kotlin.math.*
 
 /**
  * Пример
@@ -13,6 +15,16 @@ fun factorial(n: Int): Double {
     for (i in 1..n) {
         result = result * i // Please do not fix in master
     }
+    return result
+}
+// пришлось добавить функцию так как стандартная pow не принимает Int, а с приведением типов мне лень возиться
+//считает только степени от 0 до беск
+fun power(n: Int, m: Int): Int {
+    var result = n
+    for (i in m downTo 2) {
+        result *= n
+    }
+    if (m == 0) return 1
     return result
 }
 
@@ -66,7 +78,18 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+//почему комменты серые?
+fun digitNumber(n: Int): Int {
+    if (n != 0) {
+        var count = 0
+        var anotherN = n
+        while (anotherN > 0) {
+             anotherN /= 10
+             count++
+        }
+        return count
+    } else return 1
+}
 
 /**
  * Простая
@@ -74,7 +97,18 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    if ((n == 1) || (n == 2)) return 1
+    var previousValue = 1
+    var previousPreviousValue = 1
+    var result = previousPreviousValue + previousValue
+    for (i in 3..n) {
+        result = previousPreviousValue + previousValue
+        previousPreviousValue = previousValue
+        previousValue = result
+    }
+    return result
+}
 
 /**
  * Простая
@@ -82,21 +116,46 @@ fun fib(n: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    val max = if (n > m) n else m
+    val min = if (n > m) m else n
+    var result = max
+    if (max % min == 0) {
+        return max
+    } else {
+        while (result % min != 0) {
+            result += max
+        }
+        return result
+    }
+}
+
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var divider = 2
+    while (n % divider != 0) {
+        divider++
+    }
+    return divider
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var divider = 1
+    for (i in 2 until n) {
+        if (n % i == 0) divider = i
+    }
+    return divider
+}
 
 /**
  * Простая
@@ -105,7 +164,14 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var divider = 1
+    for (i in 2 .. n / 2) {
+        if ((n % i == 0) && (m % i == 0)) divider = i
+    }
+    return (divider == 1)
+}
+
 
 /**
  * Простая
@@ -114,7 +180,10 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean =
+    (floor(sqrt(n.toDouble())) - ceil(sqrt(m.toDouble())) >= 0.0)
+
+
 
 /**
  * Средняя
@@ -132,7 +201,20 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var count = 0
+    var number = x
+    while (number != 1) {
+        if (number % 2 == 0) {
+            number /= 2
+            count++
+        } else {
+            number = number * 3 + 1
+            count++
+        }
+    }
+    return count
+}
 
 /**
  * Средняя
@@ -141,7 +223,28 @@ fun collatzSteps(x: Int): Int = TODO()
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+
+fun sin(x: Double, eps: Double): Double {
+    var number = x
+    //приводим х к интервалу 0..2PI
+    while (abs(number) >= 2 * PI) {
+        if (number >= 2 * PI) number -= 2 * PI
+        else if (number <= 2 * PI) number += 2 * PI
+    }
+
+    var numberOfSeries = pow(number, 3.0) / factorial(3)
+    var sum = number
+    var coefficientOfSeries = 3
+    //нужен, чтобы менять знак каждого следующего члена последовательности через (-1)^count
+    var count = 1.0
+    while (abs(numberOfSeries) >= eps) {
+        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
+        sum += numberOfSeries
+        coefficientOfSeries += 2
+        count++
+    }
+    return sum
+}
 
 /**
  * Средняя
@@ -150,7 +253,28 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+
+fun cos(x: Double, eps: Double): Double {
+    var number = x
+    //приводим х к интервалу 0..2PI
+    while (abs(number) >= 2 * PI) {
+        if (number >= 2 * PI) number -= 2 * PI
+        else if (number <= 2 * PI) number += 2 * PI
+    }
+
+    var numberOfSeries = pow(number, 2.0) / factorial(2)
+    var sum = 1.0
+    var coefficientOfSeries = 2
+    //нужен, чтобы менять знак каждого следующего члена последовательности через (-1)^count
+    var count = 1.0
+    while (abs(numberOfSeries) >= eps) {
+        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
+        sum += numberOfSeries
+        coefficientOfSeries += 2
+        count++
+    }
+    return sum
+}
 
 /**
  * Средняя
@@ -159,7 +283,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var number = n
+    var answer = 0
+    while (number != 0) {
+        answer = answer * 10 + number % 10
+        number /= 10
+    }
+    return answer
+}
 
 /**
  * Средняя
@@ -170,7 +302,21 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    val numberOfDigits = digitNumber(n)
+    if (numberOfDigits == 1) return true
+    val number = n
+    var count = 0
+    for (i in numberOfDigits downTo (numberOfDigits / 2)) {
+        //смотри описание функции power() выше
+        if ((number / power(10, i - 1) % 10) == (number / power(10, count) % 10)) {
+            count++
+        } else {
+            return false
+        }
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -180,7 +326,15 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val numeralOnEqualDigits = n % 10
+    val numberOfDigits = digitNumber(n)
+    if (numberOfDigits == 1) return false
+    for (i in numberOfDigits downTo 2) {
+        if ((n / power(10, i - 1) % 10) == numeralOnEqualDigits) continue else return true
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -191,7 +345,18 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    if (n == 1) return 1
+    var digitsSum = 0
+    var count = 1
+    while (digitsSum < n) {
+        var sqrNum = sqr(count)
+        var numberOfDigits = digitNumber(sqrNum)
+        digitsSum += numberOfDigits
+        count++
+    }
+    return sqr(count - 1) / power(10, digitsSum - n) % 10
+}
 
 /**
  * Сложная
@@ -202,4 +367,15 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    if (n == 1) return 1
+    var digitsSum = 0
+    var count = 1
+    while (digitsSum < n) {
+        var sqrNum = fib(count)
+        var numberOfDigits = digitNumber(sqrNum)
+        digitsSum += numberOfDigits
+        count++
+    }
+    return fib(count - 1) / power(10, digitsSum - n) % 10
+}
