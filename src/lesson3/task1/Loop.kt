@@ -243,14 +243,7 @@ fun sin(x: Double, eps: Double): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 
-fun cos(x: Double, eps: Double): Double {
-    val isCosPositive = (abs(x % 2 * PI) <= PI)
-    return if (isCosPositive) {
-        sqrt(1 - pow(sin(x), 2.0))
-    } else {
-        sqrt(1 - pow(sin(x), 2.0)) * (-1)
-    }
-}
+fun cos(x: Double, eps: Double): Double = sin(x + PI / 2, eps)
 
 /**
  * Средняя
