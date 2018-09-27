@@ -66,7 +66,7 @@ fun ageDescription(age: Int): String {
     return if (age % 100 in 10..20) {
         "$age лет"
     } else {
-        return when (age % 10) {
+        when (age % 10) {
             0, in 5..9 -> "$age лет"
             1 -> "$age год"
             else -> "$age года"
@@ -88,10 +88,10 @@ fun timeForHalfWay(t1: Double, v1: Double,
     val s2 = t2 * v2
     val s3 = t3 * v3
     val s = (s1 + s2 + s3) / 2
-    when {
-        s1 >= s2 + s3 -> return s / v1
-        s3 >= s1 + s2 -> return t1 + t2 + (s - s1 -s2) / v3
-        else -> return t1 + (s - s1) / v2
+    return when {
+        s1 >= s2 + s3 -> s / v1
+        s3 >= s1 + s2 -> t1 + t2 + (s - s1 -s2) / v3
+        else -> t1 + (s - s1) / v2
     }
 
 }
@@ -107,13 +107,16 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int =
-        when {
-        (kingX != rookX1) && (kingX != rookX2) && (kingY != rookY1) && (kingY != rookY2) -> 0
-        ((kingX == rookX1) || (kingY == rookY1)) && (kingX != rookX2) && (kingY != rookY2) -> 1
-        ((kingX == rookX2) || (kingY == rookY2)) && (kingX != rookX1) && (kingY != rookY1) -> 2
+                       rookX2: Int, rookY2: Int): Int {
+    val kingUnderAttackR1 = kingX == rookX1 || kingY == rookY1
+    val kingUnderAttackR2 = kingX == rookX2 || kingY == rookY2
+    return when {
+        !kingUnderAttackR1 && !kingUnderAttackR2 -> 0
+        kingUnderAttackR1 && !kingUnderAttackR2 -> 1
+        !kingUnderAttackR1 && kingUnderAttackR2 -> 2
         else -> 3
-        }
+    }
+}
 
 
 /**
@@ -128,13 +131,16 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int =
-    when {
-        (abs(kingX - bishopX) != abs(kingY - bishopY) && (kingX != rookX) && (kingY != rookY)) -> 0
-        (abs(kingX - bishopX) != abs(kingY - bishopY) && ((kingX == rookX) || (kingY == rookY))) -> 1
-        (abs(kingX - bishopX) == abs(kingY - bishopY) && (kingX != rookX) && (kingY != rookY)) -> 2
+                          bishopX: Int, bishopY: Int): Int {
+    val bishopAttacksKing = abs(kingX - bishopX) == abs(kingY - bishopY)
+    val rookAttacksKing = kingX == rookX || kingY == rookY
+    return when {
+        !rookAttacksKing && !bishopAttacksKing -> 0
+        rookAttacksKing && !bishopAttacksKing -> 1
+        !rookAttacksKing && bishopAttacksKing -> 2
         else -> 3
     }
+}
 
 
 /**
@@ -162,12 +168,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int =
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
-        when {
-            (((a >= c) && (a == b) && (a <= d)) || ((c >= a) && (d == c) && (c <= b)) || (b == c) || (a == d)) -> 0
-            ((a <= c) && (c <= b) && (b <= d)) -> b - c
-            ((c <= a) && (a <= d) && (d <= b)) -> d - a
-            ((a <= c) && (d <= b)) -> d - c
-            ((c <= a) && (b <= d)) -> b - a
-            else -> -1
-        }
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val length = min(b,d) - max(a,c)
+    return if (length < 0) -1 else length
+}

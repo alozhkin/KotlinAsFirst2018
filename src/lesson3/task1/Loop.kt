@@ -78,17 +78,14 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-//почему комменты серые?
 fun digitNumber(n: Int): Int {
-    if (n != 0) {
-        var count = 0
-        var anotherN = n
-        while ((anotherN > 0) || (anotherN < 0)) {
-             anotherN /= 10
-             count++
-        }
-        return count
-    } else return 1
+    var anotherN = n
+    var count = 0
+    do {
+        anotherN /= 10
+        count++
+    } while (anotherN != 0)
+    return count
 }
 
 /**
@@ -117,18 +114,18 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    val max = if (n > m) n else m
-    val min = if (n > m) m else n
+    val max = max(m,n)
+    val min = min(m,n)
     var result = max
     if (max % min == 0) {
         return max
-    } else {
-        while (result % min != 0) {
-            result += max
-        }
-        return result
     }
+    while (result % min != 0) {
+        result += max
+    }
+    return result
 }
+
 
 
 /**
@@ -150,11 +147,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var divider = 1
-    for (i in 2 until n) {
-        if (n % i == 0) divider = i
-    }
-    return divider
+    var minDivider = minDivisor(n)
+    return n / minDivider
 }
 
 /**
@@ -165,14 +159,13 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var divider = 1
-    if (n == 1 && m == 1) return true
-    if (n == m) return false
-    val max = if (n > m) n else m
-    for (i in 2 .. max / 2) {
-        if ((n % i == 0) && (m % i == 0)) divider = i
+    val min = min(n,m)
+    for (i in 2 .. min) {
+        if ((n % i == 0) && (m % i == 0)) {
+            return false
+        }
     }
-    return (divider == 1)
+    return true
 }
 
 
@@ -210,11 +203,10 @@ fun collatzSteps(x: Int): Int {
     while (number != 1) {
         if (number % 2 == 0) {
             number /= 2
-            count++
         } else {
             number = number * 3 + 1
-            count++
         }
+        count++
     }
     return count
 }
@@ -228,23 +220,17 @@ fun collatzSteps(x: Int): Int {
  */
 
 fun sin(x: Double, eps: Double): Double {
-    var number = x
-    //приводим х к интервалу 0..2PI
-    while (abs(number) >= 2 * PI) {
-        if (number >= 2 * PI) number -= 2 * PI
-        else if (number <= 2 * PI) number += 2 * PI
-    }
-
-    var numberOfSeries = pow(number, 3.0) / factorial(3)
-    var sum = number
+    var number = x % (2 * PI)
+    var numberOfSeries = pow(number, 3.0) / factorial(3) * (-1)
+    var sum = number + numberOfSeries
     var coefficientOfSeries = 3
     //нужен, чтобы менять знак каждого следующего члена последовательности через (-1)^count
     var count = 1.0
     while (abs(numberOfSeries) >= eps) {
-        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
-        sum += numberOfSeries
         coefficientOfSeries += 2
         count++
+        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
+        sum += numberOfSeries
     }
     return sum
 }
@@ -258,25 +244,12 @@ fun sin(x: Double, eps: Double): Double {
  */
 
 fun cos(x: Double, eps: Double): Double {
-    var number = x
-    //приводим х к интервалу 0..2PI
-    while (abs(number) >= 2 * PI) {
-        if (number >= 2 * PI) number -= 2 * PI
-        else if (number <= 2 * PI) number += 2 * PI
+    val isCosPositive = (abs(x % 2 * PI) <= PI)
+    return if (isCosPositive) {
+        sqrt(1 - pow(sin(x), 2.0))
+    } else {
+        sqrt(1 - pow(sin(x), 2.0)) * (-1)
     }
-
-    var numberOfSeries = pow(number, 2.0) / factorial(2)
-    var sum = 1.0
-    var coefficientOfSeries = 2
-    //нужен, чтобы менять знак каждого следующего члена последовательности через (-1)^count
-    var count = 1.0
-    while (abs(numberOfSeries) >= eps) {
-        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
-        sum += numberOfSeries
-        coefficientOfSeries += 2
-        count++
-    }
-    return sum
 }
 
 /**
@@ -305,21 +278,8 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    val numberOfDigits = digitNumber(n)
-    if (numberOfDigits == 1) return true
-    val number = n
-    var count = 0
-    for (i in numberOfDigits downTo (numberOfDigits / 2)) {
-        //смотри описание функции power() выше
-        if ((number / power(10, i - 1) % 10) == (number / power(10, count) % 10)) {
-            count++
-        } else {
-            return false
-        }
-    }
-    return true
-}
+fun isPalindrome(n: Int): Boolean = (revert(n) == n)
+
 
 /**
  * Средняя
@@ -332,9 +292,11 @@ fun isPalindrome(n: Int): Boolean {
 fun hasDifferentDigits(n: Int): Boolean {
     val numeralOnEqualDigits = n % 10
     val numberOfDigits = digitNumber(n)
+    var anotherN = n / 10
     if (numberOfDigits == 1) return false
     for (i in numberOfDigits downTo 2) {
-        if ((n / power(10, i - 1) % 10) == numeralOnEqualDigits) continue else return true
+        if (anotherN % 10 != numeralOnEqualDigits) return true
+        anotherN /= 10
     }
     return false
 }
@@ -350,15 +312,16 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     if (n == 1) return 1
-    var digitsSum = 0
+    var digitsSum = 1
     var count = 1
+    var square = 1
     while (digitsSum < n) {
-        var sqrNum = sqr(count)
-        var numberOfDigits = digitNumber(sqrNum)
-        digitsSum += numberOfDigits
         count++
+        square = sqr(count)
+        var numberOfDigits = digitNumber(square)
+        digitsSum += numberOfDigits
     }
-    return sqr(count - 1) / power(10, digitsSum - n) % 10
+    return square / power(10, digitsSum - n) % 10
 }
 
 /**
@@ -372,13 +335,14 @@ fun squareSequenceDigit(n: Int): Int {
  */
 fun fibSequenceDigit(n: Int): Int {
     if (n == 1) return 1
-    var digitsSum = 0
+    var digitsSum = 1
     var count = 1
+    var fib = 1
     while (digitsSum < n) {
-        var sqrNum = fib(count)
-        var numberOfDigits = digitNumber(sqrNum)
-        digitsSum += numberOfDigits
         count++
+        fib = fib(count)
+        var numberOfDigits = digitNumber(fib)
+        digitsSum += numberOfDigits
     }
-    return fib(count - 1) / power(10, digitsSum - n) % 10
+    return fib / power(10, digitsSum - n) % 10
 }
