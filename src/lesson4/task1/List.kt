@@ -416,7 +416,7 @@ fun russian(n: Int): String {
             9 -> str += " девяносто"
         }
         when (anotherN % 10) {
-            1 -> str += " один "
+            1 -> str += " один"
             2 -> str += " два"
             3 -> str += " три"
             4 -> str += " четыре"
