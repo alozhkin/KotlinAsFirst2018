@@ -88,6 +88,8 @@ class Tests {
         assertEquals(3.0, abs(listOf(3.0)), 1e-5)
         assertEquals(5.0, abs(listOf(3.0, -4.0)), 1e-5)
         assertEquals(8.774964, abs(listOf(4.0, -5.0, 6.0)), 1e-5)
+        assertEquals(5.385164, abs(listOf(4.0, 2.0, 3.0)), 1e-6)
+        assertEquals(7.63010, abs(listOf(-6.78, 0.0, -3.5)), 1e-5)
     }
 
     @Test
@@ -97,6 +99,10 @@ class Tests {
         assertEquals(1.0, mean(listOf(1.0)), 1e-5)
         assertEquals(2.0, mean(listOf(3.0, 1.0, 2.0)), 1e-5)
         assertEquals(3.0, mean(listOf(0.0, 2.0, 7.0, 8.0, -2.0)), 1e-5)
+        assertEquals(0.0, mean(listOf(0.0, 2.0, -2.0, 8.0, -8.0)), 1e-5)
+        assertEquals(4.2, mean(listOf(7.0, 3.5, 4.5, 8.0, -2.0)), 1e-5)
+        assertEquals(0.825, mean(listOf(3.0, -2.0, -1.0, 3.1, 3.5, -9.0, 3.5, 5.5)), 1e-5)
+        assertEquals(-4.2, mean(listOf(-7.0, -3.5, -4.5, -8.0, 2.0)), 1e-5)
     }
 
     @Test
@@ -159,6 +165,8 @@ class Tests {
         assertEquals(listOf(2), factorize(2))
         assertEquals(listOf(3, 5, 5), factorize(75))
         assertEquals(listOf(2, 3, 3, 19), factorize(342))
+        assertEquals(listOf(7, 13, 17), factorize(1547))
+        assertEquals(listOf(7, 11, 13), factorize(1001))
     }
 
     @Test
