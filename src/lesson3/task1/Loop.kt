@@ -227,7 +227,7 @@ fun sin(x: Double, eps: Double): Double {
     var coefficientOfSeries = 4.0
     while (abs(numberOfSeries) >= eps) {
         // первый постинкремент увеличивает значение coefficientOfSeries
-        // на 1 во время операции, а второй после
+        // на 1 после операции, а второй увеличивает значение coefficientOfSeries++ и тоже после
         // в сумме значение увеличивается на 2
         numberOfSeries *= (-1) * sqrNumber / coefficientOfSeries++ / coefficientOfSeries++
         sum += numberOfSeries
