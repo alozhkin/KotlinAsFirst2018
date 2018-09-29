@@ -162,7 +162,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
 fun times(a: List<Double>, b: List<Double>): Double {
-    val result = mutableListOf<Double>(0.0)
+    val result = mutableListOf(0.0)
     for (i in 0 until a.size) {
         result.add(a[i] * b[i])
     }
@@ -213,7 +213,7 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var list = mutableListOf<Int>()
+    val list = mutableListOf<Int>()
     var i = 2
     var anotherN = n
     while(i <= anotherN) {
@@ -262,15 +262,15 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    var list = convert(n, base)
+    val list = convert(n, base)
     var str = ""
     for (i in 0 until list.size) {
-        if (list[i] > 9) {
+        str += if (list[i] > 9) {
             //преобразую число в букву с помощью таблицы ANCII
-            str += (87 + list[i]).toChar()
+            (87 + list[i]).toChar()
         } else {
-            var a = list[i]
-            str += "$a"
+            val a = list[i]
+            "$a"
         }
     }
     return str
@@ -303,12 +303,12 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var sum = 0
     for (char in str) {
-        if (char.toInt() in 97..122) {
+        sum = if (char.toInt() in 97..122) {
             //преобразую число в букву с помощью таблицы ANCII
-            sum = sum * base + (char.toInt() - 87)
+            sum * base + (char.toInt() - 87)
         } else {
             //преобразую число в букву с помощью таблицы ANCII
-            sum = sum * base + (char.toInt() - 48)
+            sum * base + (char.toInt() - 48)
         }
     }
     return sum
@@ -333,8 +333,7 @@ fun roman(n: Int): String = TODO()
  */
 fun russian(n: Int): String {
     var str = ""
-    var anotherN = n
-    when (anotherN / 100000) {
+    when (n / 100000) {
         1 -> str += "сто"
         2 -> str += "двести"
         3 -> str += "триста"
@@ -345,8 +344,8 @@ fun russian(n: Int): String {
         8 -> str += "восемьсот"
         9 -> str += "девятьсот"
     }
-    if (anotherN / 1000 % 100 in 10 .. 19) {
-        when (anotherN / 1000 % 10) {
+    if (n / 1000 % 100 in 10 .. 19) {
+        when (n / 1000 % 10) {
             1 -> str += " одиннадцать тысяч"
             2 -> str += " двенадцать тысяч"
             3 -> str += " тринадцать тысяч"
@@ -357,8 +356,8 @@ fun russian(n: Int): String {
             8 -> str += " восемнадцать тысяч"
             9 -> str += " девятнадцать тысяч"
         }
-    } else if (anotherN / 1000 != 0){
-        when (anotherN / 10000 % 10) {
+    } else if (n / 1000 != 0){
+        when (n / 10000 % 10) {
             2 -> str += " двадцать"
             3 -> str += " тридцать"
             4 -> str += " сорок"
@@ -368,7 +367,7 @@ fun russian(n: Int): String {
             8 -> str += " восемьдесят"
             9 -> str += " девяносто"
         }
-        when (anotherN / 1000 % 10) {
+        when (n / 1000 % 10) {
             0 -> str += " тысяч"
             1 -> str += " одна тысяча"
             2 -> str += " две тысячи"
@@ -381,7 +380,7 @@ fun russian(n: Int): String {
             9 -> str += " девять тысяч"
         }
     }
-    when (anotherN / 100 % 10) {
+    when (n / 100 % 10) {
         1 -> str += " сто"
         2 -> str += " двести"
         3 -> str += " триста"
@@ -392,8 +391,8 @@ fun russian(n: Int): String {
         8 -> str += " восемьсот"
         9 -> str += " девятьсот"
     }
-    if (anotherN % 100 in 10 .. 19) {
-        when (anotherN % 10) {
+    if (n % 100 in 10 .. 19) {
+        when (n % 10) {
             1 -> str += " одиннадцать"
             2 -> str += " двенадцать"
             3 -> str += " тринадцать"
@@ -405,7 +404,7 @@ fun russian(n: Int): String {
             9 -> str += " девятнадцать"
         }
     } else {
-        when (anotherN / 10 % 10) {
+        when (n / 10 % 10) {
             2 -> str += " двадцать"
             3 -> str += " тридцать"
             4 -> str += " сорок"
@@ -415,7 +414,7 @@ fun russian(n: Int): String {
             8 -> str += " восемьдесят"
             9 -> str += " девяносто"
         }
-        when (anotherN % 10) {
+        when (n % 10) {
             1 -> str += " один"
             2 -> str += " два"
             3 -> str += " три"
