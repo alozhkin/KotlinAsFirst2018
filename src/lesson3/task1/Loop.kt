@@ -220,16 +220,16 @@ fun collatzSteps(x: Int): Int {
  */
 
 fun sin(x: Double, eps: Double): Double {
-    var number = x % (2 * PI)
+    val number = x % (2 * PI)
+    val sqrNumber = pow(number, 2.0)
     var numberOfSeries = pow(number, 3.0) / factorial(3) * (-1)
     var sum = number + numberOfSeries
-    var coefficientOfSeries = 3
-    //нужен, чтобы менять знак каждого следующего члена последовательности через (-1)^count
-    var count = 1.0
+    var coefficientOfSeries = 4.0
     while (abs(numberOfSeries) >= eps) {
-        coefficientOfSeries += 2
-        count++
-        numberOfSeries = pow(number, coefficientOfSeries.toDouble()) / factorial(coefficientOfSeries) * pow(-1.0, count)
+        // первый постинкремент увеличивает значение coefficientOfSeries
+        // на 1 во время операции, а второй после
+        // в сумме значение увеличивается на 2
+        numberOfSeries *= (-1) * sqrNumber / coefficientOfSeries++ / coefficientOfSeries++
         sum += numberOfSeries
     }
     return sum

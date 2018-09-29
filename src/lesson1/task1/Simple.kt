@@ -52,7 +52,10 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
 fun main(args: Array<String>) {
     val list = listOf<Double>()
     val n = 50
-    println(987654/ 100 % 1000)
+    var number = 2.0
+    var coefficientOfSeries = 1.0
+    var numberOfSeries = 8.0 / 6.0
+    println(coefficientOfSeries++ / coefficientOfSeries++)
 }
 
 /**
