@@ -243,10 +243,10 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     val list = mutableListOf<Int>()
     var anotherN = n
-    while(anotherN != 0) {
+    do {
         list.add(anotherN % base)
         anotherN /= base
-    }
+    } while(anotherN != 0)
     return list.reversed()
 }
 
@@ -343,6 +343,7 @@ fun russian(n: Int): String {
     }
     if (n / 1000 % 100 in 10 .. 19) {
         when (n / 1000 % 10) {
+            0 -> str += " десять тысяч"
             1 -> str += " одиннадцать тысяч"
             2 -> str += " двенадцать тысяч"
             3 -> str += " тринадцать тысяч"
@@ -390,6 +391,7 @@ fun russian(n: Int): String {
     }
     if (n % 100 in 10 .. 19) {
         when (n % 10) {
+            0 -> str += " десять"
             1 -> str += " одиннадцать"
             2 -> str += " двенадцать"
             3 -> str += " тринадцать"
