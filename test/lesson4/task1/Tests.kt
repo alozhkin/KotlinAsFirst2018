@@ -141,6 +141,7 @@ class Tests {
         assertEquals(13.0, polynom(listOf(3.0, 2.0), 5.0), 1e-5)
         assertEquals(0.0, polynom(listOf(2.0, -3.0, 1.0), 1.0), 1e-5)
         assertEquals(45.0, polynom(listOf(-7.0, 6.0, 4.0, -4.0, 1.0), -2.0), 1e-5)
+        assertEquals(2.0, polynom(listOf(0.0, 1.0), 2.0), 1e-5)
     }
 
     @Test
@@ -187,6 +188,8 @@ class Tests {
         assertEquals(listOf(1, 2, 1, 0), convert(100, 4))
         assertEquals(listOf(1, 3, 12), convert(250, 14))
         assertEquals(listOf(2, 14, 12), convert(1000, 19))
+        assertEquals(listOf(6, 3), convert(99, 16))
+        assertEquals(listOf(1, 1, 1, 1, 0, 1), convert(61, 2))
     }
 
     @Test

@@ -304,11 +304,11 @@ fun decimalFromString(str: String, base: Int): Int {
     var sum = 0
     for (char in str) {
         sum = if (char.toInt() in 97..122) {
-            //преобразую число в букву с помощью таблицы ANCII
-            sum * base + (char.toInt() - 87)
+            //преобразую букву в число с помощью таблицы ANCII
+            sum * base + char.toInt() - 87
         } else {
-            //преобразую число в букву с помощью таблицы ANCII
-            sum * base + (char.toInt() - 48)
+            //преобразую букву в число с помощью таблицы ANCII
+            sum * base + char.toInt() - 48
         }
     }
     return sum
