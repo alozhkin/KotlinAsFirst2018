@@ -1,10 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
-import lesson3.task1.isPalindrome
-import lesson3.task1.power
-import lesson3.task1.squareBetweenExists
-import lesson3.task1.squareSequenceDigit
+import lesson3.task1.*
 import java.lang.Math.pow
 import kotlin.math.*
 
@@ -53,11 +50,12 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    var n = 2
-   var  m = 109
-    val max = max(n,m).toDouble()
-    val border = floor(sqrt(max)).toInt()
-    println(border)
+    val list = listOf<Double>()
+    val n = 50
+    var number = 2.0
+    var coefficientOfSeries = 1.0
+    var numberOfSeries = 8.0 / 6.0
+    println(coefficientOfSeries++ / coefficientOfSeries++)
 }
 
 /**
