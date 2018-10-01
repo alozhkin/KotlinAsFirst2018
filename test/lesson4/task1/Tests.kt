@@ -190,6 +190,7 @@ class Tests {
         assertEquals(listOf(2, 14, 12), convert(1000, 19))
         assertEquals(listOf(6, 3), convert(99, 16))
         assertEquals(listOf(1, 1, 1, 1, 0, 1), convert(61, 2))
+        assertEquals(listOf(0), convert(0, 3))
     }
 
     @Test
@@ -201,6 +202,7 @@ class Tests {
         assertEquals("2ec", convertToString(1000, 19))
         assertEquals("z", convertToString(35, 36))
         assertEquals("a02220281", convertToString(Int.MAX_VALUE, 11))
+        assertEquals("0", convertToString(0, 287))
     }
 
     @Test
