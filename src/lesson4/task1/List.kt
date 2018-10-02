@@ -130,10 +130,7 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    val result = list.sum() / list.size
-    return if (isNaN(result)) 0.0 else result
-}
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -158,13 +155,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    val result = mutableListOf(0.0)
-    for (i in 0 until a.size) {
-        result.add(a[i] * b[i])
-    }
-    return result.sum()
-}
+fun times(a: List<Double>, b: List<Double>): Double =
+        (a zip b).fold(0.0) { previousResult, element -> previousResult + element.first * element.second }
 
 /**
  * Средняя
@@ -174,13 +166,10 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double {
-    val listOfX = mutableListOf<Double>()
-    for (i in 0 until p.size) {
-        listOfX.add(pow(x, i.toDouble()))
-    }
-    return times(listOfX, p)
+fun polynom(p: List<Double>, x: Double): Double = p.withIndex().fold(0.0) { previousResult, element ->
+    previousResult + element.value * pow(x, element.index.toDouble())
 }
+
 
 /**
  * Средняя
@@ -260,14 +249,13 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
-    var str = ""
+    var str = buildString{}
     for (i in 0 until list.size) {
         str += if (list[i] > 9) {
             //преобразую число в букву с помощью таблицы ANCII
             (87 + list[i]).toChar()
         } else {
-            val a = list[i]
-            "$a"
+            "${list[i]}"
         }
     }
     return str
@@ -329,7 +317,7 @@ fun roman(n: Int): String = TODO()
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var str = ""
+    var str = buildString{}
     when (n / 100000) {
         1 -> str += "сто"
         2 -> str += "двести"
