@@ -250,7 +250,7 @@ fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
     var sb = StringBuilder()
     for (i in 0 until list.size) {
-        sb.append( if (list[i] > 9) {
+        sb.append(if (list[i] > 9) {
             //преобразую число в букву с помощью таблицы ANCII
             (87 + list[i]).toChar()
         } else {
