@@ -51,7 +51,19 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    println(threeDigNumToRus(0, Gender.F))
+    var r1 = 47.72046349852233
+
+    var r2 = 47.72046349852233
+
+    var x1 = 5e-324
+
+    var x2 = -2.220446049250313e-16
+
+    var y1 = -632
+
+    var y2 = -632
+
+    println(- 2.220446049250313e-167)
 }
 
 /**
