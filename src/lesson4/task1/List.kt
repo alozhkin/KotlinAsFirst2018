@@ -396,11 +396,15 @@ fun russian(n: Int): String {
     val list = mutableListOf<String>()
     if (n / 1000 != 0) {
         list.add(threeDigNumToRus(n / 1000, Gender.F))
-        list.add(when (n / 1000 % 10) {
-            0 -> "тысяч"
-            1 -> "тысяча"
-            in 2..4 -> "тысячи"
-            else -> "тысяч"
+        list.add(if (n / 1000 % 100 !in 10..19) {
+            when (n / 1000 % 10) {
+                0 -> "тысяч"
+                1 -> "тысяча"
+                in 2..4 -> "тысячи"
+                else -> "тысяч"
+            }
+        } else {
+            "тысяч"
         })
     }
     list.add(threeDigNumToRus(n % 1000, Gender.M))
