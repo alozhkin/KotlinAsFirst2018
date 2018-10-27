@@ -3,6 +3,7 @@ package lesson1.task1
 
 import lesson4.task1.Gender
 import lesson4.task1.threeDigNumToRus
+import lesson5.task1.*
 import java.lang.Math.pow
 import kotlin.math.*
 
@@ -51,19 +52,7 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    var r1 = 47.72046349852233
-
-    var r2 = 47.72046349852233
-
-    var x1 = 5e-324
-
-    var x2 = -2.220446049250313e-16
-
-    var y1 = -632
-
-    var y2 = -632
-
-    println(- 2.220446049250313e-167)
+    println(Int.MAX_VALUE + 1)
 }
 
 /**
