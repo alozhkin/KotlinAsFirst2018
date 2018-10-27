@@ -484,6 +484,18 @@ class Tests {
                 Pair(-1, -1),
                 findSumOfTwo(listOf(1, 2, 3), 6)
         )
+        assertEquals(
+                Pair(1, 4),
+                findSumOfTwo(listOf(2, 1, 3, 109, 19, 6, 88, 7), 20)
+        )
+        assertEquals(
+                Pair(0, 9),
+                findSumOfTwo(listOf(77, 778, 3, 109, 19, 6, 88, 7, 5, 33), 110)
+        )
+        assertEquals(
+                Pair(-1, -1),
+                findSumOfTwo(listOf(77, 778, 3, 109, 19, 6, 88, 7, 5, 33), 1)
+        )
     }
 
     @Test

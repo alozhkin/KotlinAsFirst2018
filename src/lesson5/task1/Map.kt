@@ -4,6 +4,7 @@ package lesson5.task1
 
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Пример
@@ -428,8 +429,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val map = mutableMapOf<Int, Int>()
     var middle = 0
     var temp = Int.MAX_VALUE
-    //наполняю мап и ищу значение близкое к number / 2
-    for ((index, elem) in list.withIndex()) {
+    //наполняю мап отсортированным списком и ищу значение близкое к number / 2
+    for ((index, elem) in list.sorted().withIndex()) {
         map[index] = elem
         if (abs(number / 2 - elem) < temp) {
             middle = index
@@ -444,7 +445,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     while (map[count]!! + (map[count + 1] ?: number - map[count]!!) < number) {
         while (map[count]!! + map[i]!! <= number) {
             if (map[count]!! + map[i]!! == number) {
-                return count to i
+                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
+                        max(list.indexOf(map[count]), list.indexOf(map[i]))
             }
             i++
         }
@@ -461,7 +463,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     while (map[count]!! + (map[count - 1] ?: - map[count]!!) > number) {
         while (map[count]!! + map[i]!! >= number) {
             if (map[count]!! + map[i]!! == number) {
-                return i to count
+                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
+                        max(list.indexOf(map[count]), list.indexOf(map[i]))
             }
             i--
         }
@@ -475,7 +478,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     while (count < map.size) {
         while (map[count]!! + (map[i] ?: - map[count]!!) >= number) {
             if (map[count]!! + map[i]!! == number) {
-                return i to count
+                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
+                        max(list.indexOf(map[count]), list.indexOf(map[i]))
             }
             i--
         }
@@ -489,7 +493,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     while (count >= 0) {
         while (map[count]!! + (map[i] ?: number - map[count]!! + 1) <= number) {
             if (map[count]!! + map[i]!! == number) {
-                return count to i
+                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
+                        max(list.indexOf(map[count]), list.indexOf(map[i]))
             }
             i++
         }
