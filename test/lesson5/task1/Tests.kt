@@ -130,6 +130,13 @@ class Tests {
                         mapOf("Emergency" to "911", "Police" to "02")
                 )
         )
+        assertEquals(
+                mapOf("Emergency" to "112, 912", "Police" to "03, 02", "Fire" to "90", "Water" to "7395"),
+                mergePhoneBooks(
+                        mapOf("Emergency" to "112", "Police" to "03", "Fire" to "90"),
+                        mapOf("Emergency" to "911", "Emergency" to "912", "Police" to "02", "Water" to "7395")
+                )
+        )
     }
 
     @Test
@@ -150,11 +157,16 @@ class Tests {
         )
     }
 
+
     @Test
     @Tag("Easy")
     fun containsIn() {
         assertTrue(containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")))
         assertFalse(containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")))
+        assertFalse(containsIn(mapOf("abc" to "zrk", "try" to "45", "ghr" to "____4"), mapOf("a" to "z", "b" to "sweet",
+                "abc" to "zrk", "ghr" to "____4", "try" to "4465")))
+        assertTrue(containsIn(mapOf(), mapOf("a" to "zee", "b" to "sweet")))
+        assertFalse(containsIn(mapOf("a" to "z"), mapOf()))
     }
 
     @Test
@@ -194,6 +206,9 @@ class Tests {
                         "печенье"
                 )
         )
+
+
+
     }
 
     @Test
@@ -203,12 +218,14 @@ class Tests {
                 mapOf(
                         "Marat" to setOf("Mikhail", "Sveta"),
                         "Sveta" to setOf("Mikhail"),
-                        "Mikhail" to setOf()
+                        "Mikhail" to setOf("Sveta")
                 ),
                 propagateHandshakes(
                         mapOf(
+
                                 "Marat" to setOf("Sveta"),
-                                "Sveta" to setOf("Mikhail")
+                                "Sveta" to setOf("Mikhail"),
+                                "Mikhail" to setOf("Sveta")
                         )
                 )
         )
@@ -226,12 +243,166 @@ class Tests {
                         )
                 )
         )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Mikhail"),
+                        "Mikhail" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Mikhail"),
+                                "Mikhail" to setOf()
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Sveta", "Mikhail", "Zhenya", "Kolya","Gena"),
+                        "Sveta" to setOf("Mikhail", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Mikhail" to setOf("Sveta", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Zhenya" to setOf("Kolya","Gena", "Marat", "Sveta", "Mikhail"),
+                        "Kolya" to setOf("Gena", "Marat", "Sveta", "Mikhail", "Zhenya"),
+                        "Gena" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Sveta"),
+                                "Sveta" to setOf("Mikhail"),
+                                "Mikhail" to setOf("Zhenya"),
+                                "Zhenya" to setOf("Kolya"),
+                                "Kolya" to setOf("Gena", "Marat")
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "D" to setOf("A", "B", "C", "Z", "Y", "W", "V"),
+                        "C" to setOf("A", "B", "Z", "D", "Y", "W", "V"),
+                        "B" to setOf("A", "C", "Z", "D", "Y", "W", "V"),
+                        "A" to setOf( "B", "C", "Z", "D", "Y", "W", "V"),
+                        "Z" to setOf("Y", "W", "V"),
+                        "Y" to setOf( "W", "V"),
+                        "W" to setOf(),
+                        "V" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "D" to setOf("C", "Z"),
+                                "C" to setOf("B","D"),
+                                "B" to setOf("A", "C"),
+                                "A" to setOf( "B"),
+                                "Z" to setOf("Y"),
+                                "Y" to setOf("W", "V")
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Sveta" to setOf("Zhenya", "Mikhail", "Pavel", "Zolya"),
+                        "Mikhail" to setOf("Zhenya", "Sveta", "Pavel", "Zolya"),
+                        "Zhenya" to setOf(),
+                        "Zolya" to setOf("Sveta", "Zhenya", "Mikhail", "Pavel"),
+                        "Pavel" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Zolya" to setOf("Zhenya", "Mikhail", "Pavel"),
+                                "Mikhail" to setOf("Sveta"),
+                                "Sveta" to setOf("Mikhail", "Pavel", "Zolya" )
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Sveta", "Mikhail", "Zhenya", "Kolya", "Gena",
+                                "Igor", "Ivan","Pavel", "Nikita"),
+                        "Sveta" to setOf("Mikhail", "Zhenya", "Kolya", "Gena", "Nikita",
+                                "Igor", "Ivan"),
+                        "Mikhail" to setOf(),
+                        "Zhenya" to setOf("Mikhail", "Kolya", "Gena", "Nikita",
+                                "Igor", "Ivan"),
+                        "Kolya" to setOf(),
+                        "Gena" to setOf("Mikhail", "Nikita", "Igor", "Ivan", "Kolya"),
+                        "Igor" to setOf("Mikhail"),
+                        "Ivan" to setOf("Kolya"),
+                        "Nikita" to setOf(),
+                        "Pavel" to setOf(),
+                        "Jack" to setOf("Pavel")
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Sveta", "Pavel"),
+                                "Jack" to setOf("Pavel"),
+                                "Sveta" to setOf("Mikhail", "Zhenya"),
+                                "Mikhail" to setOf(),
+                                "Zhenya" to setOf("Kolya", "Gena"),
+                                "Kolya" to setOf(),
+                                "Gena" to setOf("Igor", "Ivan", "Nikita"),
+                                "Igor" to setOf("Mikhail"),
+                                "Ivan" to setOf("Kolya"),
+                                "Nikita" to setOf(),
+                                "Pavel" to setOf()
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Sveta", "Mikhail", "Zhenya", "Kolya","Gena"),
+                        "Sveta" to setOf("Mikhail", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Mikhail" to setOf("Sveta", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Zhenya" to setOf("Kolya","Gena"),
+                        "Kolya" to setOf("Gena"),
+                        "Gena" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Sveta", "Zhenya"),
+                                "Sveta" to setOf("Mikhail", "Marat"),
+                                "Mikhail" to setOf("Sveta"),
+                                "Zhenya" to setOf("Kolya"),
+                                "Kolya" to setOf("Gena")
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Sveta", "Mikhail"),
+                        "Sveta" to setOf("Mikhail", "Marat"),
+                        "Mikhail" to setOf("Sveta", "Marat")
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Sveta"),
+                                "Sveta" to setOf("Mikhail", "Marat"),
+                                "Mikhail" to setOf("Sveta")
+                        )
+                )
+        )
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Sveta", "Mikhail", "Zhenya", "Kolya","Gena"),
+                        "Sveta" to setOf("Mikhail", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Mikhail" to setOf("Sveta", "Marat", "Zhenya", "Kolya","Gena"),
+                        "Zhenya" to setOf("Sveta", "Mikhail", "Marat", "Kolya","Gena"),
+                        "Kolya" to setOf("Sveta", "Mikhail", "Zhenya", "Marat","Gena"),
+                        "Gena" to setOf()
+                ),
+                propagateHandshakes(
+                        mapOf(
+                                "Marat" to setOf("Sveta", "Zhenya"),
+                                "Sveta" to setOf("Mikhail"),
+                                "Mikhail" to setOf("Kolya"),
+                                "Zhenya" to setOf("Gena", "Marat"),
+                                "Kolya" to setOf("Zhenya")
+                        )
+                )
+        )
     }
 
     @Test
     @Tag("Easy")
     fun subtractOf() {
-        val from = mutableMapOf("a" to "z", "b" to "c")
+        var from = mutableMapOf("a" to "z", "b" to "c")
 
         subtractOf(from, mapOf())
         assertEquals(from, mapOf("a" to "z", "b" to "c"))
@@ -241,6 +412,10 @@ class Tests {
 
         subtractOf(from, mapOf("a" to "z"))
         assertEquals(from, mapOf("b" to "c"))
+
+        from = mutableMapOf()
+        subtractOf(from, mapOf())
+        assertEquals(from, mapOf<String, String>())
     }
 
     @Test
@@ -291,6 +466,7 @@ class Tests {
         assertFalse(hasAnagrams(emptyList()))
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
+        assertTrue(hasAnagrams(listOf("рот", "свет", "рот")))
     }
 
     @Test
@@ -325,6 +501,13 @@ class Tests {
                 bagPacking(
                         mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                         450
+                )
+        )
+        assertEquals(
+                setOf("A"),
+                bagPacking(
+                        mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000), "A" to (999 to 1000000)),
+                        1001
                 )
         )
     }
