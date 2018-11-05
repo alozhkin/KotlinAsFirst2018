@@ -103,10 +103,10 @@ class Tests {
     @Tag("Normal")
     fun mergePhoneBooks() {
         assertEquals(
-                mapOf("Emergency" to "112"),
+                mapOf("" to "b(Yv, "),
                 mergePhoneBooks(
-                        mapOf("Emergency" to "112"),
-                        mapOf("Emergency" to "112")
+                        mapOf("" to "b(Yv"),
+                        mapOf("" to "")
                 )
         )
         assertEquals(
@@ -214,21 +214,9 @@ class Tests {
     @Test
     @Tag("Hard")
     fun propagateHandshakes() {
-        assertEquals(
-                mapOf(
-                        "Marat" to setOf("Mikhail", "Sveta"),
-                        "Sveta" to setOf("Mikhail"),
-                        "Mikhail" to setOf("Sveta")
-                ),
-                propagateHandshakes(
-                        mapOf(
 
-                                "Marat" to setOf("Sveta"),
-                                "Sveta" to setOf("Mikhail"),
-                                "Mikhail" to setOf("Sveta")
-                        )
-                )
-        )
+
+
         assertEquals(
                 mapOf(
                         "Marat" to setOf("Mikhail", "Sveta"),
@@ -467,6 +455,17 @@ class Tests {
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
         assertTrue(hasAnagrams(listOf("рот", "свет", "рот")))
+        assertFalse(hasAnagrams(listOf("t",
+                "9&wl;FxRinxR@oOo2",
+                "k/#>qb8VttCrk|f\nId?&S V9k8!|0+a\nh_u^!1_?YuGHk\"iYZ;4dfq`C;:\nA<Uzp!QXEd#5q@h=:",
+                "|",
+                "4N",
+                "6k$1rZ|P\"\nZAJG:VD\"TE[ex:Quq>N-O|fW[]6jz[[IF+pt1=-2>)P'UY)S8Ta@g0T!\tCNc#Q40vR9e$'Iez={XR6^\nh62){&]K_<C.S[^v[||reXNTmzlI*g\"\n",
+                "Y`vb",
+                "Q!",
+                "8A:D(Wo!Pd$5!OufEsh^tc0Wx;CSdr1=,'tQ*+oK@B2DIns&tm>_SM/KEe?u\\u9p",
+                "'\nw5\"a[D\t|a6u+\$r+\taM/*)Jw,0eO/oc,_sp~.)<]Vg(,w63}Tk\$zRvUIw$:P/gblwkW P!Tb]^f| Q=6P/|+<Zh`!]#f\t,v+?8&",
+                "4l7\tY;Gr1~ql0r>0:`c(]t#D[F>U+P=1Lb`_o.xSt;(b e+Nm>goK{MtSs{6ck<\t!a\\QfuK10+P^bi\$q#gn5szVu*vtCi4lRZ3#$!l3K8y\$Dbep>k~\tF7+\\5j0da:4<D&1#-(}ow|$,L&Ak+eqO7/D/R)K9BVrM`X{h<")))
     }
 
     @Test

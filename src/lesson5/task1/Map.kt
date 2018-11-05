@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -141,10 +140,9 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    val c = mergePhoneBooks(a,b)
-    return c == b
-}
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
+    a.all { b.contains(it.key) && b[it.key] == it.value }
+
 
 /**
  * Средняя
@@ -160,13 +158,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     val sum = mutableMapOf<String, Double>()
     val mapOfCounts = mutableMapOf<String, Int>()
     for ((key, value) in stockPrices) {
-        if (sum.containsKey(key)) {
-            sum[key] = sum[key]!! + value
-            mapOfCounts[key] = mapOfCounts[key]!! + 1
-        } else {
-            sum[key] = sum[key] ?: 0.0 + value
-            mapOfCounts[key] = 1
-        }
+        sum[key] = sum.getOrPut(key) { 0.0 } + value
+        mapOfCounts[key] = mapOfCounts.getOrPut(key) { 0 } + 1
     }
     sum.forEach { (key) ->
         sum[key] = sum[key]!! / mapOfCounts[key]!!
@@ -189,17 +182,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var minPrice = Double.MAX_VALUE
-    var result: String? = null
-    for ((key, value) in stuff) {
-        if (value.first == kind && minPrice >= value.second) {
-            result = key
-            minPrice = value.second
-        }
-    }
-    return result
-}
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
+        stuff.filter { (key, value) -> kind.contains(value.first) }.minBy { (key,value) -> value.second }?.key
 
 /**
  * Сложная
@@ -230,84 +214,65 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 // Во FRIENDS хранится значение агрумента propagateHandshakes
 // В BUFFER заносятся промежуточные и конечные значения для каждого человека
 // NAMESTACK -- хранит список всех имён, вызванных до этого
-var FRIENDS = mapOf<String, Set<String>>()
-var BUFFER = mutableMapOf<String, MutableSet<String>>()
-var NAMESTACK = mutableListOf<String>()
 
 
-fun prpg (str: String) {
-    if (FRIENDS[str] != null) {
-        // вызываю функцию, пока не дойду до родительской вершины, имени, отсутствующего в FRIENDS,
-        // или пустого множества
-        if (!NAMESTACK.contains(str)) {
-            // добавляю имя, для которого вызывалась функция, ко всем значениям имён в стеке
-            for (name in NAMESTACK) {
-                if (BUFFER[name] == null) {
-                    BUFFER[name] = mutableSetOf()
-                }
-                BUFFER[name]!!.add(str)
-            }
-            if (FRIENDS[str]!!.isEmpty()) {
-                // создаю для имён, имеющих пустое множество в качестве значения, запись в буфере
-                BUFFER[str] = mutableSetOf()
-            } else {
-                // добавляю имя в стек и перехожу к дочерним вершинам
-                NAMESTACK.add(str)
-                for (element in FRIENDS[str]!!) {
-                    prpg(element)
-                }
-                NAMESTACK.remove(NAMESTACK.last())
-            }
-        }
-    } else {
-        // создаю для имён, отсутствующих в FRIENDS, запись в буфере и добавляю их в значения всех имён в стеке
-        for (name in NAMESTACK) {
-            if (BUFFER[name] == null) {
-                BUFFER[name] = mutableSetOf()
-            }
-            BUFFER[name]!!.add(str)
-        }
-        BUFFER[str] = mutableSetOf()
-    }
-}
-// родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
-// чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
-// дочерним вершинам уже полученные полные значения родительских вершин и их имена.
-fun prpg2 (str: String) {
-    if (FRIENDS[str] != null && BUFFER[str] != null) {
-        if (!NAMESTACK.contains(str)) {
-            // вызываю функцию для всех дочерних вершин, пока не наткнусь на родительскую или пустое множество
-            // очень важно, чтобы в случае развлетвления функция сначала вызывалась для родительских вершин,
-            // чтобы они могли отдать значения
-            NAMESTACK.add(str)
-            for (element in FRIENDS[str]!!.sortedBy { !NAMESTACK.contains(it) }) {
-                prpg2(element)
-            }
-            NAMESTACK.remove(NAMESTACK.last())
-        } else {
-            // здесь программа отдаёт значение и имя верхней вершины всем именам в стеке
-            for (name in NAMESTACK) {
-                if (name != str) {
-                    // name вычитается, потому что нельзя быть знакомым с самим собой
-                    BUFFER[name]!!.addAll(BUFFER[str]!! + str)
-                    BUFFER[name]!!.remove(name)
-                }
-            }
-        }
-    }
-}
+
 
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    BUFFER = mutableMapOf()
-    NAMESTACK = mutableListOf()
-    FRIENDS = friends
-    friends.forEach { (key) ->
-        if (!BUFFER.containsKey(key)) {
-            prpg(key)
-            prpg2(key)
+    var nameStack = mutableListOf<String>()
+    var buffer = mutableMapOf<String, MutableSet<String>>()
+    var alreadyWas = mutableSetOf<String>()
+
+    fun foo(name: String) {
+        // вызываю функцию, пока не дойду до вершины, которая уже была
+        if ((friends[name]?.isEmpty() == true || friends[name]?.isEmpty() == null) && buffer[name] == null) {
+            // создаю для имён, отсутствующих в FRIENDS, запись в буфере и добавляю их в значения всех имён в стеке
+            // создаю для имён, имеющих пустое множество в качестве значения, запись в буфере
+            buffer[name] = mutableSetOf()
+        } else {
+            nameStack.add(name)
+            // добавляю значения имени, для которого вызывалась функция, ко всем значениям имён в стеке
+            for (elem in friends[name]!!) {
+                for (str in nameStack) {
+                    if (str != elem) buffer.getOrPut(str) { mutableSetOf() }.add(elem)
+                }
+                if (buffer[elem] == null) {
+                    foo(elem)
+                }
+            }
+            nameStack.remove(nameStack.last())
         }
     }
-    return BUFFER
+    // родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
+    // чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
+    // дочерним вершинам уже полученные полные значения родительских вершин и их имена.
+    fun foo2(name: String) {
+        nameStack.add(name)
+        alreadyWas.add(name)
+        for (elem in buffer[name]!!.sortedBy { !nameStack.contains(it) }) {
+            if (nameStack.contains(elem)) {
+                for (str in nameStack) {
+                    if (str != elem) {
+                        buffer.getOrPut(str) { mutableSetOf() }.addAll(buffer[elem]!! + elem - str)
+                    }
+                }
+            } else {
+                if (!alreadyWas.contains(elem)) {
+                    foo2(elem)
+                }
+            }
+        }
+        nameStack.remove(nameStack.last())
+    }
+
+    friends.keys.forEach { key ->
+        if (!buffer.containsKey(key)) {
+            foo(key)
+            foo2(key)
+        }
+    }
+
+    return buffer
 }
 
 
@@ -327,14 +292,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *     -> a changes to mutableMapOf() aka becomes empty
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
-    val listToRemove = mutableListOf<String>()
     for ((key, value) in b) {
         if (a.containsKey(key) && a[key] == value) {
-            listToRemove.add(key)
+            a.remove(key)
         }
-    }
-    for (element in listToRemove) {
-        a.remove(element)
     }
 }
 
@@ -343,7 +304,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.contains(it) }
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.contains(it) }.distinct()
 
 /**
  * Средняя
@@ -354,15 +315,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val setOfChar = chars.toSet()
-    for (letter in word) {
-        if (!setOfChar.contains(letter)) {
-            return false
-        }
-    }
-    return true
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.all { chars.contains(it) }
 
 
 /**
@@ -395,9 +348,11 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
+    val temp = words.map { it.toList().sorted() }
+    val sortedWords = temp.mapIndexed { index, i -> index to i }.toMap()
     for (i in 0 until words.size) {
         for (j in i + 1 until words.size) {
-            if (canBuildFrom(words[i].toList(), words[j])) {
+            if (sortedWords[i] == sortedWords[j]) {
                 return true
             }
         }
@@ -423,84 +378,18 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    if (list.isEmpty()) {
-        return -1 to -1
-    }
-    val map = mutableMapOf<Int, Int>()
-    var middle = 0
-    var temp = Int.MAX_VALUE
-    //наполняю мап отсортированным списком и ищу значение близкое к number / 2
-    for ((index, elem) in list.sorted().withIndex()) {
-        map[index] = elem
-        if (abs(number / 2 - elem) < temp) {
-            middle = index
-            temp = abs(number / 2 - elem)
+    val map = list.sorted().mapIndexed { index, i -> index to i }.toMap()
+    val lastIndex = list.lastIndex
+    for (i in 0 until lastIndex) {
+        var j = i + 1
+        var sum = 0
+        while (sum < number && j <= lastIndex) {
+            sum = map[i]!! + map[j]!!
+            if (sum == number) return min(list.indexOf(map[i]), list.indexOf(map[j])) to
+                    max(list.indexOf(map[i]), list.indexOf(map[j]))
+            j++
         }
     }
-
-    var count = middle
-    var i = middle + 1
-
-    //проверяю все подходящие значения больше middle, увеличивая middle
-    while (map[count]!! + (map[count + 1] ?: number - map[count]!!) < number) {
-        while (map[count]!! + map[i]!! <= number) {
-            if (map[count]!! + map[i]!! == number) {
-                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
-                        max(list.indexOf(map[count]), list.indexOf(map[i]))
-            }
-            i++
-        }
-        while (count - i != 0) {
-
-        }
-        count++
-    }
-
-    count = middle
-    i = middle - 1
-
-    //проверяю все подходящие значения меньше middle, уменьшая middle
-    while (map[count]!! + (map[count - 1] ?: - map[count]!!) > number) {
-        while (map[count]!! + map[i]!! >= number) {
-            if (map[count]!! + map[i]!! == number) {
-                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
-                        max(list.indexOf(map[count]), list.indexOf(map[i]))
-            }
-            i--
-        }
-        count--
-    }
-
-    count = middle
-    i = middle - 1
-
-    //проверяю все подходящие значения меньше middle, увеличивая middle
-    while (count < map.size) {
-        while (map[count]!! + (map[i] ?: - map[count]!!) >= number) {
-            if (map[count]!! + map[i]!! == number) {
-                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
-                        max(list.indexOf(map[count]), list.indexOf(map[i]))
-            }
-            i--
-        }
-        count++
-    }
-
-    count = middle
-    i = middle + 1
-
-    //проверяю все подходящие значения больше middle, уменьшая middle
-    while (count >= 0) {
-        while (map[count]!! + (map[i] ?: number - map[count]!! + 1) <= number) {
-            if (map[count]!! + map[i]!! == number) {
-                return min(list.indexOf(map[count]), list.indexOf(map[i])) to
-                        max(list.indexOf(map[count]), list.indexOf(map[i]))
-            }
-            i++
-        }
-        count--
-    }
-
     return -1 to -1
 }
 
