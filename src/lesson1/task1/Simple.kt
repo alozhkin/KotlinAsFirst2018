@@ -1,10 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson1.task1
 
-import lesson4.task1.Gender
-import lesson4.task1.threeDigNumToRus
-import lesson5.task1.*
+
 import java.lang.Math.pow
+import java.lang.Math.random
 import kotlin.math.*
 
 /**
@@ -52,7 +51,13 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    println(Int.MAX_VALUE + 1)
+    val list = mutableListOf(0,1,2,3,4,5)
+    val sequence = generateSequence(1) { it + 1 }
+    val fibonacci = generateSequence(1 to 1) {it.second to it.first+it.second}.map {it.first}
+    println(fibonacci.take(100).windowed(2, 4).toList())
+    var buffer = mutableMapOf<Int, MutableSet<String>>()
+    buffer.getOrPut(9) { mutableSetOf<String>() }.add("gh")
+    println(buffer[9])
 }
 
 /**
