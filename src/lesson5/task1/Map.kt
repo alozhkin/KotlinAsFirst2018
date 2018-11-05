@@ -229,12 +229,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             // создаю для имён, отсутствующих в FRIENDS, запись в буфере и добавляю их в значения всех имён в стеке
             // создаю для имён, имеющих пустое множество в качестве значения, запись в буфере
             buffer[name] = mutableSetOf()
+            for (str in nameStack) {
+                buffer.getOrPut(str) { mutableSetOf() }.add(name)
+            }
         } else {
             nameStack.add(name)
             // добавляю значения имени, для которого вызывалась функция, ко всем значениям имён в стеке
             for (elem in friends[name]!!) {
                 for (str in nameStack) {
-                    if (str != elem) buffer.getOrPut(str) { mutableSetOf() }.add(elem)
+                    if (str != elem) {
+                        buffer.getOrPut(str) { mutableSetOf() }.add(elem)
+                    }
                 }
                 if (buffer[elem] == null) {
                     foo(elem)
