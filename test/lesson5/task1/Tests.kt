@@ -103,9 +103,9 @@ class Tests {
     @Tag("Normal")
     fun mergePhoneBooks() {
         assertEquals(
-                mapOf("" to "b(Yv, "),
+                mapOf("" to "b(Yv, ", "a" to ""),
                 mergePhoneBooks(
-                        mapOf("" to "b(Yv"),
+                        mapOf("" to "b(Yv", "a" to ""),
                         mapOf("" to "")
                 )
         )
@@ -215,8 +215,21 @@ class Tests {
     @Tag("Hard")
     fun propagateHandshakes() {
 
+        assertEquals(
+                mapOf(
+                        "Marat" to setOf("Mikhail", "Sveta"),
+                        "Sveta" to setOf("Mikhail"),
+                        "Mikhail" to setOf("Sveta")
+                ),
+                propagateHandshakes(
+                        mapOf(
 
-
+                                "Marat" to setOf("Sveta"),
+                                "Sveta" to setOf("Mikhail"),
+                                "Mikhail" to setOf("Sveta")
+                        )
+                )
+        )
         assertEquals(
                 mapOf(
                         "Marat" to setOf("Mikhail", "Sveta"),
@@ -473,7 +486,7 @@ class Tests {
     @Tag("Hard")
     fun findSumOfTwo() {
         assertEquals(
-                Pair( 7, -9),
+                Pair( 7, 9),
                 findSumOfTwo(listOf(40700,
                         40699,
                         34662,

@@ -97,19 +97,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val mapC = mapA.toMutableMap()
-    for ((key, value) in mapB) {
-        if (mapA.containsKey(key)) {
-            if (!mapA.containsValue(value)) {
-                mapC[key] = "${mapA[key]}, $value"
-            }
-        } else {
-            mapC[key] = value
-        }
-    }
-    return mapC
-}
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
 
 /**
  * Простая
@@ -214,14 +202,78 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 // Во FRIENDS хранится значение агрумента propagateHandshakes
 // В BUFFER заносятся промежуточные и конечные значения для каждого человека
 // NAMESTACK -- хранит список всех имён, вызванных до этого
+var FRIENDS = mapOf<String, Set<String>>()
+var BUFFER = mutableMapOf<String, MutableSet<String>>()
+var NAMESTACK = mutableListOf<String>()
+var WAS = mutableMapOf<String, Int>()
 
 
-
+fun prpg (str: String) {
+    if (FRIENDS[str] != null) {
+        // вызываю функцию, пока не дойду до родительской вершины, имени, отсутствующего в FRIENDS,
+        // или пустого множества
+        if (!NAMESTACK.contains(str)) {
+            // добавляю имя, для которого вызывалась функция, ко всем значениям имён в стеке
+            for (name in NAMESTACK) {
+                if (BUFFER[name] == null) {
+                    BUFFER[name] = mutableSetOf()
+                }
+                BUFFER[name]!!.add(str)
+            }
+            if (FRIENDS[str]!!.isEmpty()) {
+                // создаю для имён, имеющих пустое множество в качестве значения, запись в буфере
+                BUFFER[str] = mutableSetOf()
+            } else {
+                // добавляю имя в стек и перехожу к дочерним вершинам
+                NAMESTACK.add(str)
+                for (element in FRIENDS[str]!!) {
+                    prpg(element)
+                }
+                NAMESTACK.remove(NAMESTACK.last())
+            }
+        }
+    } else {
+        // создаю для имён, отсутствующих в FRIENDS, запись в буфере и добавляю их в значения всех имён в стеке
+        for (name in NAMESTACK) {
+            if (BUFFER[name] == null) {
+                BUFFER[name] = mutableSetOf()
+            }
+            BUFFER[name]!!.add(str)
+        }
+        BUFFER[str] = mutableSetOf()
+    }
+}
+// родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
+// чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
+// дочерним вершинам уже полученные полные значения родительских вершин и их имена.
+fun prpg2 (str: String) {
+    if (FRIENDS[str] != null && BUFFER[str] != null) {
+        if (!NAMESTACK.contains(str)) {
+            // вызываю функцию для всех дочерних вершин, пока не наткнусь на родительскую или пустое множество
+            // очень важно, чтобы в случае развлетвления функция сначала вызывалась для родительских вершин,
+            // чтобы они могли отдать значения
+            NAMESTACK.add(str)
+            for (element in FRIENDS[str]!!.sortedBy { !NAMESTACK.contains(it) }) {
+                prpg2(element)
+            }
+            NAMESTACK.remove(NAMESTACK.last())
+        } else {
+            // здесь программа отдаёт значение и имя верхней вершины всем именам в стеке
+            for (name in NAMESTACK) {
+                if (name != str) {
+                    // name вычитается, потому что нельзя быть знакомым с самим собой
+                    BUFFER[name]!!.addAll(BUFFER[str]!! + str)
+                    BUFFER[name]!!.remove(name)
+                }
+            }
+        }
+    }
+}
 
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+
     var nameStack = mutableListOf<String>()
     var buffer = mutableMapOf<String, MutableSet<String>>()
-    var alreadyWas = mutableMapOf<String, Int>()
 
     fun foo(name: String) {
         // вызываю функцию, пока не дойду до вершины, которая уже была
@@ -251,22 +303,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     // родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
     // чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
     // дочерним вершинам уже полученные полные значения родительских вершин и их имена.
-    fun prpg2 (str: String) {
+    fun foo2 (str: String) {
         if (friends[str] != null && buffer[str] != null) {
             if (!nameStack.contains(str)) {
                 // вызываю функцию для всех дочерних вершин, пока не наткнусь на родительскую или пустое множество
                 // очень важно, чтобы в случае развлетвления функция сначала вызывалась для родительских вершин,
                 // чтобы они могли отдать значения
                 nameStack.add(str)
-                if (alreadyWas[str] == null) {
-                    alreadyWas[str] = 1
-                } else {
-                    alreadyWas[str] = 2
-                }
                 for (element in friends[str]!!.sortedBy { !nameStack.contains(it) }) {
-                    if (alreadyWas[element] != 2) {
-                        prpg2(element)
-                    }
+                    foo2(element)
                 }
                 nameStack.remove(nameStack.last())
             } else {
@@ -281,14 +326,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             }
         }
     }
-
     friends.keys.forEach { key ->
         if (!buffer.containsKey(key)) {
             foo(key)
-            prpg2(key)
+            foo2(key)
         }
     }
-
     return buffer
 }
 
