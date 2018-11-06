@@ -97,7 +97,22 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val mapC = mutableMapOf<String, MutableList<String>>()
+    val mapD = mutableMapOf<String, String>()
+    for ((key, value) in mapA) {
+        mapC.getOrPut(key) { mutableListOf() }.add(value)
+    }
+    for ((key, value) in mapB) {
+        if (value != mapA[key]) {
+            mapC.getOrPut(key) { mutableListOf() }.add(value)
+        }
+    }
+    for (key in mapC.keys) {
+        mapD[key] = mapC[key]!!.joinToString(separator = ", ")
+    }
+    return mapD
+}
 
 /**
  * Простая
@@ -203,15 +218,13 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 // В BUFFER заносятся промежуточные и конечные значения для каждого человека
 // NAMESTACK -- хранит список всех имён, вызванных до этого
 
-
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
 
+    val nameStack = mutableListOf<String>()
+    val buffer = mutableMapOf<String, MutableSet<String>>()
+    val alreadyWas = mutableMapOf<String, Boolean>()
 
-    var nameStack = mutableListOf<String>()
-    var buffer = mutableMapOf<String, MutableSet<String>>()
-    var alreadyWas = mutableMapOf<String, Int>()
-
-
+    //--------------------------------------------------------------------------------------------------------
     fun foo(name: String) {
         // вызываю функцию, пока не дойду до вершины, которая уже была
         if ((friends[name]?.isEmpty() == true || friends[name]?.isEmpty() == null) && buffer[name] == null) {
@@ -237,56 +250,31 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             nameStack.remove(nameStack.last())
         }
     }
+    //-------------------------------------------------------------------------------------------------------
     // родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
     // чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
     // дочерним вершинам уже полученные полные значения родительских вершин и их имена.
-    fun foo2 (str: String) {
-        if (friends[str] != null && buffer[str] != null) {
-            if (!nameStack.contains(str)) {
-                // вызываю функцию для всех дочерних вершин, пока не наткнусь на родительскую или пустое множество
-                // очень важно, чтобы в случае развлетвления функция сначала вызывалась для родительских вершин,
-                // чтобы они могли отдать значения
-                nameStack.add(str)
-                for (element in friends[str]!!.sortedBy { !nameStack.contains(it) }) {
-                    foo2(element)
-                }
-                nameStack.remove(nameStack.last())
-            } else {
-                // здесь программа отдаёт значение и имя верхней вершины всем именам в стеке
-                for (name in nameStack) {
-                    if (name != str) {
-                        // name вычитается, потому что нельзя быть знакомым с самим собой
-                        buffer[name]!!.addAll(buffer[str]!! + str)
-                        buffer[name]!!.remove(name)
-                    }
-                }
-            }
-        }
-    }
-
-    fun foo3(str: String) {
+    fun foo2(str: String) {
         if (friends[str] != null && buffer[str] != null) {
             nameStack.add(str)
             for (elem in friends[str]!!.sortedBy { !nameStack.contains(it) }) {
                 for (name in nameStack) {
                     buffer[name]!!.addAll(buffer[elem]!! + elem - name)
                 }
-                if (alreadyWas[elem] != 1) {
-                    alreadyWas[elem] = 1
-                    foo3(elem)
+                if (alreadyWas[elem] != true) {
+                    alreadyWas[elem] = true
+                    foo2(elem)
                 }
             }
             nameStack.remove(nameStack.last())
         }
     }
+    //----------------------------------------------------------------------------------------------------
 
-    buffer.keys.forEach { key ->
-        alreadyWas[key] = 0
-    }
     friends.keys.forEach { key ->
         if (!buffer.containsKey(key)) {
             foo(key)
-            foo3(key)
+            foo2(key)
         }
     }
 
@@ -350,7 +338,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    var map = mutableMapOf<String, Int>()
+    val map = mutableMapOf<String, Int>()
     for (elem in list) {
         map[elem] = (map[elem] ?: 0) + 1
     }
@@ -404,8 +392,23 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         var sum = -1
         while (sum < number && j <= lastIndex) {
             sum = map[i]!! + map[j]!!
-            if (sum == number) return min(list.indexOf(map[i]), list.indexOf(map[j])) to
-                    max(list.indexOf(map[i]), list.indexOf(map[j]))
+            if (sum == number)
+                if (map[i] != map[j]) {
+                    return min(list.indexOf(map[i]), list.indexOf(map[j])) to
+                            max(list.indexOf(map[i]), list.indexOf(map[j]))
+                } else {
+                    val num = map[i]
+                    var temp = -1
+                    list.forEachIndexed { index, value ->
+                        if (value == num) {
+                            if (temp == -1) {
+                                temp = index
+                            } else {
+                                return temp to index
+                            }
+                        }
+                    }
+                }
             j++
         }
     }
