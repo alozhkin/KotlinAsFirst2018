@@ -221,7 +221,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     var nameStack = mutableListOf<String>()
     var buffer = mutableMapOf<String, MutableSet<String>>()
-    var alreadyWas = mutableSetOf<String>()
+    var alreadyWas = mutableMapOf<String, Int>()
 
     fun foo(name: String) {
         // вызываю функцию, пока не дойду до вершины, которая уже была
@@ -251,29 +251,41 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     // родительские вершины могут вызываться из дочерних, ещё до того, как функция прошла все вершины, необходимые,
     // чтобы получить их полные значения. Чтобы этого избежать необходимо во второй раз пройти по графу и отдать
     // дочерним вершинам уже полученные полные значения родительских вершин и их имена.
-    fun foo2(name: String) {
-        nameStack.add(name)
-        alreadyWas.add(name)
-        for (elem in buffer[name]!!.sortedBy { !nameStack.contains(it) }) {
-            if (nameStack.contains(elem)) {
-                for (str in nameStack) {
-                    if (str != elem) {
-                        buffer.getOrPut(str) { mutableSetOf() }.addAll(buffer[elem]!! + elem - str)
+    fun prpg2 (str: String) {
+        if (friends[str] != null && buffer[str] != null) {
+            if (!nameStack.contains(str)) {
+                // вызываю функцию для всех дочерних вершин, пока не наткнусь на родительскую или пустое множество
+                // очень важно, чтобы в случае развлетвления функция сначала вызывалась для родительских вершин,
+                // чтобы они могли отдать значения
+                nameStack.add(str)
+                if (alreadyWas[str] == null) {
+                    alreadyWas[str] = 1
+                } else {
+                    alreadyWas[str] = 2
+                }
+                for (element in friends[str]!!.sortedBy { !nameStack.contains(it) }) {
+                    if (alreadyWas[element] != 2) {
+                        prpg2(element)
                     }
                 }
+                nameStack.remove(nameStack.last())
             } else {
-                if (!alreadyWas.contains(elem)) {
-                    foo2(elem)
+                // здесь программа отдаёт значение и имя верхней вершины всем именам в стеке
+                for (name in nameStack) {
+                    if (name != str) {
+                        // name вычитается, потому что нельзя быть знакомым с самим собой
+                        buffer[name]!!.addAll(buffer[str]!! + str)
+                        buffer[name]!!.remove(name)
+                    }
                 }
             }
         }
-        nameStack.remove(nameStack.last())
     }
 
     friends.keys.forEach { key ->
         if (!buffer.containsKey(key)) {
             foo(key)
-            foo2(key)
+            prpg2(key)
         }
     }
 
