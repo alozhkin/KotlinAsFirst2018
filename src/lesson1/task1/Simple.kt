@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
     println(fibonacci.take(100).windowed(2, 4).toList())
     var buffer = mutableMapOf<Int, MutableSet<String>>()
     buffer.getOrPut(9) { mutableSetOf<String>() }.add("gh")
-    println(buffer[9])
+    println('ꉿ'.toString().toLowerCase() == "[")
 }
 
 /**

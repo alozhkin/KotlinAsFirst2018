@@ -158,16 +158,12 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val sum = mutableMapOf<String, Double>()
-    val mapOfCounts = mutableMapOf<String, Int>()
-    for ((key, value) in stockPrices) {
-        sum[key] = sum.getOrPut(key) { 0.0 } + value
-        mapOfCounts[key] = mapOfCounts.getOrPut(key) { 0 } + 1
+    val prices = stockPrices.groupBy({it.first}, {it.second})
+    val average = mutableMapOf<String, Double>()
+    for (key in prices.keys) {
+        average[key] = prices[key]!!.average()
     }
-    sum.forEach { (key) ->
-        sum[key] = sum[key]!! / mapOfCounts[key]!!
-    }
-    return sum
+    return average
 }
 
 /**
@@ -321,7 +317,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().all { chars.toString().
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().all { chars.joinToString().
         toLowerCase().contains(it) }
 
 
