@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.math.BigDecimal
+import java.math.BigDecimal.ROUND_UNNECESSARY
 import kotlin.math.max
 import kotlin.math.min
 
@@ -160,8 +162,17 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val prices = stockPrices.groupBy({it.first}, {it.second})
     val average = mutableMapOf<String, Double>()
+    val count = mutableMapOf<String, Int>()
     for (key in prices.keys) {
-        average[key] = prices[key]!!.average()
+        count[key] = 0
+    }
+    var sum = 0.0.toBigDecimal()
+    for (key in prices.keys) {
+        for (price in prices[key]!!) {
+            sum += price.toBigDecimal()
+            count[key] = count[key]!! + 1
+        }
+        average[key] = (sum.divide(count[key]!!.toBigDecimal(), ROUND_UNNECESSARY)).toDouble()
     }
     return average
 }
