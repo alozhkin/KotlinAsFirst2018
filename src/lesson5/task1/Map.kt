@@ -166,8 +166,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     for (key in prices.keys) {
         count[key] = 0
     }
-    var sum = 0.0.toBigDecimal()
     for (key in prices.keys) {
+        var sum = 0.0.toBigDecimal()
         for (price in prices[key]!!) {
             sum += price.toBigDecimal()
             count[key] = count[key]!! + 1
