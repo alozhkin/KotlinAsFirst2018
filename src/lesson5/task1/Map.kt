@@ -164,7 +164,11 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     val prices = stockPrices.groupBy({it.first}, {it.second})
     val average = mutableMapOf<String, Double>()
     for (key in prices.keys) {
-        average[key] = prices[key]!!.average()
+        var count = 0
+        for (price in prices[key]!!) {
+            count++
+        }
+        average[key] = prices[key]!!.fold(0.0) { result, it -> result + it / count }
     }
     return average
 }
