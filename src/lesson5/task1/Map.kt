@@ -388,33 +388,15 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val map = list.sorted().mapIndexed { index, i -> index to i }.toMap()
-    val lastIndex = list.lastIndex
-    for (i in 0 until lastIndex) {
-        var j = i + 1
-        var sum = -1
-        while (sum < number && j <= lastIndex) {
-            sum = map[i]!! + map[j]!!
-            if (sum == number)
-                if (map[i] != map[j]) {
-                    return min(list.indexOf(map[i]), list.indexOf(map[j])) to
-                            max(list.indexOf(map[i]), list.indexOf(map[j]))
-                } else {
-                    val num = map[i]
-                    var temp = -1
-                    list.forEachIndexed { index, value ->
-                        if (value == num) {
-                            if (temp == -1) {
-                                temp = index
-                            } else {
-                                return temp to index
-                            }
-                        }
-                    }
-                }
-            j++
-        }
+
+    val copyMap = list.mapIndexed { index, i -> index to i }.toMap()
+
+    for (elem in copyMap) {
+        val tempMap = copyMap - elem.key
+        if (tempMap.containsValue(number - elem.value)) return elem.key to
+                tempMap.values.indexOf(number - elem.value) + 1
     }
+
     return -1 to -1
 }
 
