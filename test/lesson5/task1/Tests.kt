@@ -421,7 +421,9 @@ class Tests {
     @Test
     @Tag("Normal")
     fun canBuildFrom() {
-        assertFalse(canBuildFrom(listOf('I', 'ꉿ'), "["))
+        assertFalse(canBuildFrom(listOf('踛', '稔', '햦', '䶮', 'Ƛ', '-', 'V', 't', '橋', 'p', '7', '0', 'f', '2', '䁏',
+                '뤏', 'V', 'y', 'ヹ', '蓷', 'd', '_', 'a', 'I', '{', 'h', '%', '-', 'ᩛ', '}', 'A',
+                '豖', '-', '9', 'C', 'A', '1'),","))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
         assertTrue(canBuildFrom(listOf('I'), "i"))
