@@ -105,7 +105,7 @@ fun dateStrToDigit(str: String): String {
             throw IllegalArgumentException()
         }
 
-        return String.format("%02d.%02d.%04d", day, monthInt, year)
+        return String.format("%02d.%02d.%d", day, monthInt, year)
     }
 
     catch (e: IllegalArgumentException) {
@@ -152,7 +152,6 @@ fun flattenPhoneNumber(phone: String): String =
     if (phone.contains(Regex("""[^\s\d()\-+]|\d(?=.*\+)"""))) {
         ""
     } else {
-        println(Regex("""[()\-\s]""").replace(phone, ""))
         Regex("""[()\-\s]""").replace(phone, "")
     }
 
