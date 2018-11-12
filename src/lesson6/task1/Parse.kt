@@ -71,7 +71,25 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun daysInMonth(month: Int, year: Int): Int =
+        when (month) {
+            2 -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) 29 else 28
+            4,6,9,11 -> 30
+            else -> 31
+        }
+
+fun convertMonthToInt(str: String): Int =
+        when (str){
+            "январь" -> 1
+            "февраль" -> 2
+            "март" -> 3
+            "апрель" -> 4
+            "май" -> 5
+            else -> 7
+        }
+fun dateStrToDigit(str: String): String {
+return ""
+}
 
 /**
  * Средняя
