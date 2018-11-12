@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import java.lang.IndexOutOfBoundsException
+
 /**
  * Пример
  *
@@ -43,20 +45,15 @@ fun timeSecondsToStr(seconds: Int): String {
  * Пример: консольный ввод
  */
 fun main(args: Array<String>) {
-    println("Введите время в формате ЧЧ:ММ:СС")
-    val line = readLine()
-    if (line != null) {
-        val seconds = timeStrToSeconds(line)
-        if (seconds == -1) {
-            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
-            println("Прошло секунд с начала суток: $seconds")
-        }
+    val phone = "0000000 876 ++++ --------------- --9 gjhggfg @!5578+++++++= 991"
+    val a = Regex("""\d|\+""").replace(phone, "").toPattern()
+    val b = Regex("""\d|\+""").findAll(phone)
+    var k = StringBuilder()
+    var list = mutableListOf<String>()
+    for (i in b) {
+        list.add(i.value)
     }
-    else {
-        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
-    }
+    println(phone.contains(Regex("""\D\S[^()-+]""")))
 }
 
 
@@ -79,16 +76,50 @@ fun daysInMonth(month: Int, year: Int): Int =
         }
 
 fun convertMonthToInt(str: String): Int =
-        when (str){
-            "январь" -> 1
-            "февраль" -> 2
-            "март" -> 3
-            "апрель" -> 4
-            "май" -> 5
-            else -> 7
+        when (str) {
+            "января" -> 1
+            "февраля" -> 2
+            "марта" -> 3
+            "апреля" -> 4
+            "мая" -> 5
+            "июня" -> 6
+            "июля" -> 7
+            "августа" -> 8
+            "сентября" -> 9
+            "октября" -> 10
+            "ноября" -> 11
+            "декабря" -> 12
+            else -> throw IllegalArgumentException()
         }
+
 fun dateStrToDigit(str: String): String {
-return ""
+
+    try {
+
+        val splitedStr = str.split(" ")
+        val day = splitedStr[0].toInt()
+        val year = splitedStr[2].toInt()
+        val monthInt = convertMonthToInt(splitedStr[1])
+
+        if (day !in 1..daysInMonth(monthInt, year)) {
+            throw IllegalArgumentException()
+        }
+
+        return String.format("%02d.%02d.%04d", day, monthInt, year)
+    }
+
+    catch (e: IllegalArgumentException) {
+        return ""
+    }
+
+    catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
+
+    catch (e: NumberFormatException) {
+        return ""
+    }
+
 }
 
 /**
@@ -115,7 +146,17 @@ fun dateDigitToStr(digital: String): String = TODO()
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+
+
+fun flattenPhoneNumber(phone: String): String =
+    if (phone.contains(Regex("""[^\s\d()\-+]|\d(?=.*\+)"""))) {
+        ""
+    } else {
+        println(Regex("""[()\-\s]""").replace(phone, ""))
+        Regex("""[()\-\s]""").replace(phone, "")
+    }
+
+
 
 /**
  * Средняя
