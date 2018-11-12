@@ -325,7 +325,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.toLowerCase().all { chars.joinToString().
-        toLowerCase().contains(it) }
+        toLowerCase().filterNot { literal -> literal == ',' }.contains(it) }
 
 
 /**

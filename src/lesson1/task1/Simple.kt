@@ -58,9 +58,44 @@ fun main(args: Array<String>) {
     var buffer = mutableMapOf<Int, MutableSet<String>>()
     buffer.getOrPut(9) { mutableSetOf<String>() }.add("gh")
     val a = 5e-324
-    println(a)
-    1.7976931348623157e+308
-    2.0903408544910647e+307
+    val lis = listOf<String>("踛",
+            "稔",
+            "햦",
+            "䶮",
+            "Ƛ",
+            "-",
+            "V",
+            "t",
+            "橋",
+            "p",
+            "7",
+            "0",
+            "f",
+            "2",
+            "䁏",
+            "뤏",
+            "V",
+            "y",
+            "ヹ",
+            "蓷",
+            "d",
+            "_",
+            "a",
+            "I",
+            "{",
+            "h",
+            "%",
+            "-",
+            "ᩛ",
+            "}",
+            "A",
+            "豖",
+            "-",
+            "9",
+            "C",
+            "A",
+            "1").map { it -> "'$it'" }
+    println(lis)
 }
 
 /**
