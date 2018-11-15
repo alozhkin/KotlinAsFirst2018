@@ -2,9 +2,6 @@
 
 package lesson5.task1
 
-import java.math.BigDecimal
-import java.math.BigDecimal.ROUND_HALF_UP
-import java.math.BigDecimal.ROUND_UNNECESSARY
 import kotlin.math.max
 import kotlin.math.min
 
@@ -324,8 +321,11 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        word.toLowerCase().all { chars.map { lit -> lit.toLowerCase() }.contains(it) }
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    val wordSet = word.toSet().map { it -> it.toLowerCase() }.toSet()
+    val charsSet = chars.toSet().map { it -> it.toLowerCase() }.toSet()
+    return charsSet.containsAll(wordSet)
+}
 
 
 /**
@@ -389,12 +389,26 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 
-    val copyMap = list.mapIndexed { index, i -> index to i }.toMap()
+    val copyMap = list.sorted().mapIndexed { index, i -> index to i }.toMap()
+    val indexMap = list.mapIndexed { index, i -> index to i }.groupBy({it.second},{it.first})
+    var i = 0
+    var j = copyMap.size - 1
 
-    for (elem in copyMap) {
-        val tempMap = copyMap - elem.key
-        if (tempMap.containsValue(number - elem.value)) return elem.key to
-                tempMap.values.indexOf(number - elem.value) + 1
+    while (i != j) {
+        when {
+            copyMap[j]!! + copyMap[i]!! > number -> j--
+            copyMap[j]!! + copyMap[i]!! < number -> i++
+            else -> {
+                val firstValue = copyMap[i]!!
+                val secondValue = copyMap[j]!!
+                return if (firstValue == secondValue) {
+                    indexMap[firstValue]!!.first() to indexMap[secondValue]!!.component2()
+                } else {
+                    min(indexMap[firstValue]!!.first(), indexMap[secondValue]!!.first()) to
+                            max(indexMap[firstValue]!!.first(), indexMap[secondValue]!!.first())
+                }
+            }
+        }
     }
 
     return -1 to -1
