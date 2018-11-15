@@ -94,8 +94,13 @@ fun main(args: Array<String>) {
             "9",
             "C",
             "A",
-            "1").map { it -> "'$it'" }
-    println(lis)
+            "1")
+    println(lis.joinToString(separator = ""))
+    val p = ""
+    val pd:String? = null
+    val l = emptyList<Int>()
+    val k:List<Int>? = null
+    println(l == k)
 }
 
 /**

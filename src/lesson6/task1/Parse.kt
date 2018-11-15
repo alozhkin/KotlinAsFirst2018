@@ -49,7 +49,7 @@ fun main(args: Array<String>) {
     val a = Regex("""\d|\+""").replace(phone, "").toPattern()
     val b = Regex("""\d|\+""").findAll(phone)
     var k = StringBuilder()
-    var list = mutableListOf<String>()
+    val list = mutableListOf<String>()
     for (i in b) {
         list.add(i.value)
     }
@@ -167,7 +167,14 @@ fun flattenPhoneNumber(phone: String): String =
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int =
+        if (jumps.contains(Regex("""[^\s\d\-%]""")) || !jumps.contains(Regex("""\d"""))) {
+            -1
+        } else {
+            val resWithSpaces = Regex("""[\-%]""").replace(jumps, "")
+            val res = resWithSpaces.replace(Regex("""\s+"""), " ").trim().split(Regex("""\s""")).map { it.toInt() }
+            res.max()!!
+        }
 
 /**
  * Сложная
@@ -179,7 +186,14 @@ fun bestLongJump(jumps: String): Int = TODO()
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int =
+        if (jumps.contains(Regex("""[^\s\d\-%\+]"""))) {
+            -1
+        } else {
+            jumps.replace(Regex("""[%\-]|\d(?!.*\+)"""), "").replace(Regex("""\+"""), "")
+                    .replace(Regex("""\s+"""), " ").trim()
+                    .split(" ").last().toInt()
+        }
 
 /**
  * Сложная
@@ -190,7 +204,26 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (expression.contains(Regex("""\+\s[+\-]|-\s[+\-]|\d\s[\d]|[^\d\s\-+]|^[+\-]|[+\-]$""")) ||
+            !expression.contains(Regex("""\d"""))) {
+        throw IllegalArgumentException()
+    } else {
+        val list = expression.split(" ")
+        val size = list.size
+        val map = list.mapIndexed { index, i -> index to i }.toMap()
+        var sum = map[0]!!.toInt()
+        for (i in 1 until size) {
+            if (map[i] == "+") {
+                sum += map[i+1]!!.toInt()
+            }
+            if (map[i] == "-") {
+                sum -= map[i+1]!!.toInt()
+            }
+        }
+        return sum
+    }
+}
 
 /**
  * Сложная
@@ -201,7 +234,16 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val strToLow = str.toLowerCase()
+    for (word in strToLow.split(" ")) {
+        val res = Regex("""$word(?=\s$word)""").find(strToLow)
+        if (res != null) {
+            return res.range.first
+        }
+    }
+    return -1
+}
 
 /**
  * Сложная
