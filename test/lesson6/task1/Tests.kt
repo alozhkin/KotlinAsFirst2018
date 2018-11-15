@@ -80,7 +80,7 @@ class Tests {
     fun bestHighJump() {
         assertEquals(226, bestHighJump("226 +"))
         assertEquals(-1, bestHighJump("???"))
-        assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
+        assertEquals( 907430095, bestHighJump("0 %%+ 1 %+ 389897365 %+ 147483647 %%- 907430095 %%+ 147483648 %%+ 1 +"))
     }
 
     @Test

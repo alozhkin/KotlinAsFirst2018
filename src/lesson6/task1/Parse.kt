@@ -186,14 +186,16 @@ fun bestLongJump(jumps: String): Int =
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int =
-        if (jumps.contains(Regex("""[^\s\d\-%\+]"""))) {
-            -1
-        } else {
-            jumps.replace(Regex("""[%\-]|\d(?!.*\+)"""), "").replace(Regex("""\+"""), "")
-                    .replace(Regex("""\s+"""), " ").trim()
-                    .split(" ").last().toInt()
-        }
+fun bestHighJump(jumps: String): Int {
+    return if (jumps.contains(Regex("""[^\s\d\-%\+]""")) || !jumps.contains(Regex("\\d.*+"))) {
+        -1
+    } else {
+        val strJumps = jumps.replace(Regex("""[%\-]|\d(?!.*\+)"""), "").replace(Regex("""\+"""), "")
+                .replace(Regex("""\s+"""), " ").trim().split(" ")
+        val a = strJumps.map { it.toInt() }.max()
+        a!!
+    }
+}
 
 /**
  * Сложная
@@ -237,7 +239,7 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val strToLow = str.toLowerCase()
     for (word in strToLow.split(" ")) {
-        val res = Regex("""$word(?=\s$word)""").find(strToLow)
+        val res = Regex("""\$word(?=\s\$word)""").find(strToLow)
         if (res != null) {
             return res.range.first
         }
