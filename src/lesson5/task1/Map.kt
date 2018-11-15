@@ -394,6 +394,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var i = 0
     var j = copyMap.size - 1
 
+    if (list.isEmpty()) return -1 to -1
+
     while (i != j) {
         when {
             copyMap[j]!! + copyMap[i]!! > number -> j--
