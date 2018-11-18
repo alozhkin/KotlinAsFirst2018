@@ -57,50 +57,9 @@ fun main(args: Array<String>) {
     println(fibonacci.take(100).windowed(2, 4).toList())
     var buffer = mutableMapOf<Int, MutableSet<String>>()
     buffer.getOrPut(9) { mutableSetOf<String>() }.add("gh")
-    val a = 5e-324
-    val lis = listOf<String>("踛",
-            "稔",
-            "햦",
-            "䶮",
-            "Ƛ",
-            "-",
-            "V",
-            "t",
-            "橋",
-            "p",
-            "7",
-            "0",
-            "f",
-            "2",
-            "䁏",
-            "뤏",
-            "V",
-            "y",
-            "ヹ",
-            "蓷",
-            "d",
-            "_",
-            "a",
-            "I",
-            "{",
-            "h",
-            "%",
-            "-",
-            "ᩛ",
-            "}",
-            "A",
-            "豖",
-            "-",
-            "9",
-            "C",
-            "A",
-            "1")
-    println(lis.joinToString(separator = ""))
-    val p = ""
-    val pd:String? = null
-    val l = emptyList<Int>()
-    val k:List<Int>? = null
-    println(l == k)
+    val str = "adfg 9764"
+    val a = str.takeWhile { it != ' ' }
+    println(a)
 }
 
 /**
