@@ -2,7 +2,6 @@
 
 package lesson6.task1
 
-import java.lang.IndexOutOfBoundsException
 
 /**
  * Пример
@@ -46,9 +45,7 @@ fun timeSecondsToStr(seconds: Int): String {
  */
 fun main(args: Array<String>) {
     val phone = "0000000 876 ++++ --------------- --9 gjhggfg @!5578+++++++= 991"
-    val a = Regex("""\d|\+""").replace(phone, "").toPattern()
     val b = Regex("""\d|\+""").findAll(phone)
-    var k = StringBuilder()
     val list = mutableListOf<String>()
     for (i in b) {
         list.add(i.value)
@@ -108,18 +105,9 @@ fun dateStrToDigit(str: String): String {
         return String.format("%02d.%02d.%d", day, monthInt, year)
     }
 
-    catch (e: IllegalArgumentException) {
+    catch (e: Exception) {
         return ""
     }
-
-    catch (e: IndexOutOfBoundsException) {
-        return ""
-    }
-
-    catch (e: NumberFormatException) {
-        return ""
-    }
-
 }
 
 /**
@@ -149,11 +137,11 @@ fun dateDigitToStr(digital: String): String = TODO()
 
 
 fun flattenPhoneNumber(phone: String): String =
-    if (phone.contains(Regex("""[^\s\d()\-+]|\d(?=.*\+)"""))) {
-        ""
-    } else {
-        Regex("""[()\-\s]""").replace(phone, "")
-    }
+        if (phone.contains(Regex("""[^\s\d()\-+]|\d(?=.*\+)"""))) {
+            ""
+        } else {
+            Regex("""[()\-\s]""").replace(phone, "")
+        }
 
 
 
@@ -167,14 +155,10 @@ fun flattenPhoneNumber(phone: String): String =
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int =
-        if (jumps.contains(Regex("""[^\s\d\-%]""")) || !jumps.contains(Regex("""\d"""))) {
-            -1
-        } else {
-            val resWithSpaces = Regex("""[\-%]""").replace(jumps, "")
-            val res = resWithSpaces.replace(Regex("""\s+"""), " ").trim().split(Regex("""\s""")).map { it.toInt() }
-            res.max()!!
-        }
+fun bestLongJump(jumps: String): Int {
+    if (jumps.contains(Regex("""[^\d\s-%]"""))) return -1
+    return jumps.split(" ").filter { Regex("""\d+""").matches(it) }.map { it.toInt() }.max() ?: -1
+}
 
 /**
  * Сложная
@@ -187,13 +171,22 @@ fun bestLongJump(jumps: String): Int =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    return if (jumps.contains(Regex("""[^\s\d\-%\+]""")) || !jumps.contains(Regex("\\d.*+"))) {
-        -1
+    if (jumps.contains(Regex("""[^\s\d-%+]"""))) {
+        return -1
     } else {
-        val strJumps = jumps.replace(Regex("""[%\-]|\d(?!.*\+)"""), "").replace(Regex("""\+"""), "")
-                .replace(Regex("""\s+"""), " ").trim().split(" ")
-        val a = strJumps.map { it.toInt() }.max()
-        a!!
+        return try {
+            val map = jumps.split(" ").mapIndexed { index, i -> index to i }.toMap()
+            var max = -1
+            for (i in 0 until map.size step 2) {
+                if (map[i + 1]!!.contains("+") && map[i]!!.toInt() > max) {
+                    max = map[i]!!.toInt()
+                }
+            }
+            max
+        }
+        catch(e: Exception) {
+            -1
+        }
     }
 }
 
@@ -207,7 +200,8 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if (expression.contains(Regex("""\+\s[+\-]|-\s[+\-]|\d\s[\d]|[^\d\s\-+]|^[+\-]|[+\-]$""")) ||
+    //TODO()
+    if (expression.contains(Regex("""([+-])\s\1|\d\s\d|[^\d\s\-+]|^[+-]|[+-]$""")) ||
             !expression.contains(Regex("""\d"""))) {
         throw IllegalArgumentException()
     } else {
@@ -237,12 +231,18 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val strToLow = str.toLowerCase()
-    for (word in strToLow.split(" ")) {
-        val res = Regex("""\$word(?=\s\$word)""").find(strToLow)
-        if (res != null) {
-            return res.range.first
+    val strToLow = str.toLowerCase().split(" ").mapIndexed { index, s -> index to s }.toMap()
+    try {
+        var preWord = strToLow[0]
+        for (i in 1 until strToLow.size) {
+            if (strToLow[i] == preWord) {
+                return str.toLowerCase().indexOf("$preWord $preWord")
+            }
+            preWord = strToLow[i]
         }
+    }
+    catch (e: Exception) {
+        -1
     }
     return -1
 }

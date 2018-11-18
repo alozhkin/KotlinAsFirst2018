@@ -322,8 +322,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { b.
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val wordSet = word.toSet().map { it -> it.toLowerCase() }.toSet()
-    val charsSet = chars.toSet().map { it -> it.toLowerCase() }.toSet()
+    val wordSet = word.toSet().map { it.toLowerCase() }.toSet()
+    val charsSet = chars.toSet().map { it.toLowerCase() }.toSet()
     return charsSet.containsAll(wordSet)
 }
 
@@ -388,6 +388,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    //TODO()
 
     val copyMap = list.sorted().mapIndexed { index, i -> index to i }.toMap()
     val indexMap = list.mapIndexed { index, i -> index to i }.groupBy({it.second},{it.first})
