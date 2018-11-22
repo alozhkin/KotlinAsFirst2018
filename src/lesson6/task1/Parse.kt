@@ -202,14 +202,14 @@ fun plusMinus(expression: String): Int {
     } else {
         val list = expression.split(" ")
         val size = list.size
-        val map = list.mapIndexed { index, i -> index to i }.toMap()
-        var sum = map[0]!!.toInt()
+        val array = ArrayList(list)
+        var sum = array[0]!!.toInt()
         for (i in 1 until size) {
-            if (map[i] == "+") {
-                sum += map[i+1]!!.toInt()
+            if (array[i] == "+") {
+                sum += array[i+1]!!.toInt()
             }
-            if (map[i] == "-") {
-                sum -= map[i+1]!!.toInt()
+            if (array[i] == "-") {
+                sum -= array[i+1]!!.toInt()
             }
         }
         return sum
