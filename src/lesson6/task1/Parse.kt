@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 
 /**
  * Пример
@@ -65,12 +67,6 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun daysInMonth(month: Int, year: Int): Int =
-        when (month) {
-            2 -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) 29 else 28
-            4,6,9,11 -> 30
-            else -> 31
-        }
 
 fun convertMonthToInt(str: String): Int =
         when (str) {
@@ -175,11 +171,11 @@ fun bestHighJump(jumps: String): Int {
         return -1
     } else {
         return try {
-            val map = jumps.split(" ").mapIndexed { index, i -> index to i }.toMap()
+            val array = ArrayList(jumps.split(" "))
             var max = -1
-            for (i in 0 until map.size step 2) {
-                if (map[i + 1]!!.contains("+") && map[i]!!.toInt() > max) {
-                    max = map[i]!!.toInt()
+            for (i in 0 until array.size step 2) {
+                if (array[i + 1]!!.contains("+") && array[i]!!.toInt() > max) {
+                    max = array[i]!!.toInt()
                 }
             }
             max
@@ -200,7 +196,6 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    //TODO()
     if (expression.contains(Regex("""([+-])\s\1|\d\s\d|[^\d\s\-+]|^[+-]|[+-]$""")) ||
             !expression.contains(Regex("""\d"""))) {
         throw IllegalArgumentException()

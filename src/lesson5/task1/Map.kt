@@ -3,7 +3,6 @@
 package lesson5.task1
 
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Пример
@@ -388,29 +387,15 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    //TODO()
 
-    val copyMap = list.sorted().mapIndexed { index, i -> index to i }.toMap()
-    val indexMap = list.mapIndexed { index, i -> index to i }.groupBy({it.second},{it.first})
-    var i = 0
-    var j = copyMap.size - 1
+    val map = mutableMapOf<Int, Int>()
 
-    if (list.isEmpty()) return -1 to -1
-
-    while (i != j) {
-        when {
-            copyMap[j]!! + copyMap[i]!! > number -> j--
-            copyMap[j]!! + copyMap[i]!! < number -> i++
-            else -> {
-                val firstValue = copyMap[i]!!
-                val secondValue = copyMap[j]!!
-                return if (firstValue == secondValue) {
-                    indexMap[firstValue]!!.first() to indexMap[secondValue]!!.component2()
-                } else {
-                    min(indexMap[firstValue]!!.first(), indexMap[secondValue]!!.first()) to
-                            max(indexMap[firstValue]!!.first(), indexMap[secondValue]!!.first())
-                }
-            }
+    list.forEachIndexed { index, value ->
+        val indexOfPair = map[number - value]
+        if (indexOfPair != null) {
+            return indexOfPair to index
+        } else {
+            map[value] = index
         }
     }
 
