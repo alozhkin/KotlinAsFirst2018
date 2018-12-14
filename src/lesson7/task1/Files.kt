@@ -123,7 +123,18 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val bf = File("temp").bufferedWriter()
+    var maxLenght = 0
+    for (str in File(inputName).readLines()) {
+        bf.write(str.replace(Regex("""\s+"""), " "))
+    }
+
+    for (str in File("temp").readLines()) {
+        if (str.length > maxLenght) {
+            maxLenght = str.length
+        }
+    }
 }
 
 /**
@@ -257,9 +268,148 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
-}
+    val wr = File(outputName).writer()
+    wr.write("<html><body><p>")
+    var koorsWas = false
+    var zhirWas = false
+    var zachWas = false
+    var nextLineWas = false
+    var propuskHoda = 0
+    val str = File(inputName).readText()
+    var i = 0
+    if (nextLineWas) {
+        nextLineWas = !nextLineWas
+        wr.write("</p><p>")
+    }
 
+
+    if (str.isEmpty()) {
+        nextLineWas = true
+    } else if (str.length == 1) {
+        wr.write("str")
+
+
+    } else if (str.length == 2) {
+        while (i < str.length - 1) {
+            if (str[i] == '~' && str[i + 1] == '~') {
+                if (zachWas) {
+                    wr.write("</s>")
+                } else {
+                    wr.write("<s>")
+                }
+                i++
+                zachWas = !zachWas
+            } else if (str[i] == '*') {
+                if (str[i+1] == '*') {
+                    if (zhirWas) {
+                        wr.write("</b>")
+                    } else {
+                        wr.write("<b>")
+                    }
+                    i++
+                    zhirWas = !zhirWas
+                } else {
+                    if (koorsWas) {
+                        wr.write("</i>")
+                    } else {
+                        wr.write("<i>")
+                    }
+                    i++
+                    koorsWas = !koorsWas
+                }
+            } else {
+                wr.write("${str[i]}")
+                wr.write("${str[i+1]}")
+            }
+            i++
+        }
+
+
+
+
+
+
+    } else {
+        while (i < str.length - 2) {
+            if (str[i] == '~' && str[i + 1] == '~') {
+                if (zachWas) {
+                    wr.write("</s>")
+                } else {
+                    wr.write("<s>")
+                }
+                i++
+                zachWas = !zachWas
+            } else if (str[i] == '*') {
+                if (str[i + 1] == '*' && str[i + 2] == '*') {
+                    when {
+                        koorsWas && zhirWas -> wr.write("<b><i>")
+                        !koorsWas && zhirWas -> wr.write("<b></i>")
+                        !koorsWas && !zhirWas -> wr.write("</b></i>")
+                        koorsWas && zhirWas -> wr.write("</b><i>")
+                    }
+                    zhirWas = !zhirWas
+                    koorsWas = !koorsWas
+                    i += 2
+                } else if (str[i+1] == '*') {
+                    if (zhirWas) {
+                        wr.write("</b>")
+                    } else {
+                        wr.write("<b>")
+                    }
+                    i++
+                    zhirWas = !zhirWas
+                } else {
+                    if (koorsWas) {
+                        wr.write("</i>")
+                    } else {
+                        wr.write("<i>")
+                    }
+                    koorsWas = !koorsWas
+                }
+            } else {
+                wr.write("${str[i]}")
+            }
+            i++
+        }
+    }
+
+
+    while (i < str.length - 1) {
+        if (str[i] == '~' && str[i + 1] == '~') {
+            if (zachWas) {
+                wr.write("</s>")
+            } else {
+                wr.write("<s>")
+            }
+            i++
+            zachWas = !zachWas
+        } else if (str[i] == '*') {
+            if (str[i+1] == '*') {
+                if (zhirWas) {
+                    wr.write("</b>")
+                } else {
+                    wr.write("<b>")
+                }
+                i++
+                zhirWas = !zhirWas
+            } else {
+                if (koorsWas) {
+                    wr.write("</i>")
+                } else {
+                    wr.write("<i>")
+                }
+                i++
+                koorsWas = !koorsWas
+            }
+        } else {
+            wr.write("${str[i]}")
+            wr.write("${str[i+1]}")
+        }
+        i++
+    }
+    wr.write("</p></html></body>")
+    wr.close()
+}
 /**
  * Сложная
  *
