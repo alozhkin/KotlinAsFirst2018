@@ -54,15 +54,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val count = substrings.associate { it to 0 }.toMutableMap()
-    val text = File(inputName).readText().toLowerCase()
-    for (el in substrings) {
-        val str = el.toLowerCase()
-        count[el] = Regex(str).findAll(text).toList().size
-    }
-    return count
-}
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
 
 
 /**
@@ -79,7 +71,23 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val cons = setOf('Ж', 'ж', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ')
+    val vow = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        var i = 1
+        while (i <= line.length) {
+            if (cons.contains(line[i - 1]) && vow.contains(line[i])) {
+                writer.write("${line[i - 1]}${vow[line[i]]}")
+                i += 2
+            } else {
+                writer.append(line[i - 1])
+                i++
+            }
+        }
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**

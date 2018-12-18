@@ -2,6 +2,7 @@
 package lesson1.task1
 
 
+import java.io.File
 import java.lang.Math.pow
 import java.lang.Math.random
 import kotlin.math.*
@@ -60,6 +61,14 @@ fun main(args: Array<String>) {
     val str = "adfg 9764"
     val a = str.takeWhile { it != ' ' }
     println(a)
+    val substrings = listOf("bb")
+    val count = substrings.associate { it to 0 }.toMutableMap()
+    val text = "bbb"
+    for (el in substrings) {
+        val str = el.toLowerCase()
+        count[el] = Regex(str).findAll(text).toList().size
+    }
+    println(count)
 }
 
 /**
