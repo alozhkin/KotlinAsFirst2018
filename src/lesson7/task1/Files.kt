@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.OutputUtil.writeln
 import java.io.File
 
 /**
@@ -75,13 +76,15 @@ fun sibilants(inputName: String, outputName: String) {
     val vow = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
     val writer = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
-        var i = 1
-        while (i <= line.length) {
-            if (cons.contains(line[i - 1]) && vow.contains(line[i])) {
-                writer.write("${line[i - 1]}${vow[line[i]]}")
-                i += 2
-            } else {
-                writer.append(line[i - 1])
+        if (line.isNotEmpty()) {
+            var i = 1
+            writer.append(line[0])
+            while (i < line.length) {
+                if (cons.contains(line[i - 1]) && vow.contains(line[i])) {
+                    writer.append(vow[line[i]]!!)
+                } else {
+                    writer.append(line[i])
+                }
                 i++
             }
         }
@@ -89,7 +92,6 @@ fun sibilants(inputName: String, outputName: String) {
     }
     writer.close()
 }
-
 /**
  * Средняя
  *
