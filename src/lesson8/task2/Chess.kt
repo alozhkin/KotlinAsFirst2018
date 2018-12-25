@@ -21,8 +21,17 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String = if (column !in 1..8 || row !in 1..8) ""
+    else "${(column + 96).toChar()}$row"
+
+    override fun equals(other: Any?): Boolean {
+        return other is Square && other.column == column && other.row == row
+    }
+
+    constructor(s: Square): this(column = s.column, row = s.row)
 }
+
+
 
 /**
  * Простая
@@ -31,7 +40,15 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    if (Regex("""[a-h][1-8]""").matches(notation)) {
+        return Square(notation[0].toInt() - 96, notation[1].toString().toInt())
+    } else {
+        throw IllegalArgumentException()
+    }
+}
+
+
 
 /**
  * Простая
@@ -56,7 +73,13 @@ fun square(notation: String): Square = TODO()
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
-fun rookMoveNumber(start: Square, end: Square): Int = TODO()
+fun rookMoveNumber(start: Square, end: Square): Int {
+    return when {
+        start.column == end.column && start.row == end.row -> 0
+        start.column == end.column || start.row == end.row -> 1
+        else -> 2
+    }
+}
 
 /**
  * Средняя
@@ -72,7 +95,19 @@ fun rookMoveNumber(start: Square, end: Square): Int = TODO()
  *          rookTrajectory(Square(3, 5), Square(8, 5)) = listOf(Square(3, 5), Square(8, 5))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun rookTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun rookTrajectory(start: Square, end: Square): List<Square> {
+    var now = Square(start)
+    var res = mutableListOf(now)
+    if (now.column != end.column) {
+        now = Square(end.column, now.row)
+        res.add(now)
+    }
+    if (now.row != end.row) {
+        now = Square(now.column, end.row)
+        res.add(now)
+    }
+    return res
+}
 
 /**
  * Простая
