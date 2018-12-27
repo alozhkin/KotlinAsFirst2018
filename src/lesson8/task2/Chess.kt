@@ -150,7 +150,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 fun bishopMoves(start: Square, end: Square): List<Square> =
-        if (start.row < 5 && start.column > 4 || start.row > 4 && start.column < 5) {
+         if (start.row < 5 && start.column > 4 || start.row > 4 && start.column < 5) {
             val p = (start.row + start.column - end.row - end.column) / 2
             listOf(start, Square(end.column + p, end.row + p), end)
         }
