@@ -149,33 +149,22 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun foo(start: Square, end: Square): List<Square> {
-    when {
-        start.row < 5 && start.column < 5 -> {
-            val p = (end.row + end.column - start.row - start.column) / 2
-            return listOf(start, Square(start.column + p, start.row + p), end)
-        }
-        start.row < 5 && start.column > 4 -> {
+fun bishopMoves(start: Square, end: Square): List<Square> =
+        if (start.row < 5 && start.column > 4 || start.row > 4 && start.column < 5) {
             val p = (start.row + start.column - end.row - end.column) / 2
-            return listOf(start, Square(end.column + p, end.row + p), end)
+            listOf(start, Square(end.column + p, end.row + p), end)
         }
-        start.row > 4 && start.column < 5 -> {
-            val p = (start.row + start.column - end.row - end.column) / 2
-            return listOf(start, Square(end.column + p, end.row + p), end)
-        }
-        else -> {
+        else {
             val p = (end.row + end.column - start.row - start.column) / 2
-            return listOf(start, Square(start.column - p, start.row - p), end)
+            listOf(start, Square(start.column + p, start.row + p), end)
         }
-    }
-}
 
 fun bishopTrajectory(start: Square, end: Square): List<Square> {
     return when (bishopMoveNumber(start, end)) {
         -1 -> listOf()
         0 -> listOf(start)
         1 -> listOf(start, end)
-        else -> foo(start, end)
+        else -> bishopMoves(start, end)
     }
 }
 
