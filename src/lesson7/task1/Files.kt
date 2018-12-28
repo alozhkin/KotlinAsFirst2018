@@ -110,7 +110,23 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var max = 0
+    val wr = File(outputName).bufferedWriter()
+
+    for (line in File(inputName).readLines()) {
+        if (line.trim().length > max) {
+            max = line.trim().length
+        }
+    }
+    for (line in File(inputName).readLines()) {
+        val size = line.trim().length
+        for (i in 1.. (max - size) / 2) {
+            wr.write(" ")
+        }
+        wr.write(line.trim())
+        wr.newLine()
+    }
+    wr.close()
 }
 
 /**
@@ -162,7 +178,21 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val count = mutableMapOf<String, Int>()
+    val res = mutableMapOf<String, Int>()
+    var i = 0
+    val l = File(inputName).readText().toLowerCase().split(Regex("""[^a-zа-яё]""")).filter { it != "" }
+    for (word in l) {
+        count[word] = count.getOrPut(word) { 0 } + 1
+    }
+    val list = count.toList().sortedByDescending { it.second }
+    while (i < 20 && i < list.size) {
+        res[list[i].first] = list[i].second
+        i++
+    }
+    return res
+}
 
 /**
  * Средняя
